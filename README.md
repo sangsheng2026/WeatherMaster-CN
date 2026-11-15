@@ -1,140 +1,136 @@
-<div align="center">
-   <img src="preview/icon.png" alt="" width="150px">
-</div> 
-<h1 align="center">
- WeatherMaster
-</h1>
-   <div  align="center">
-      <img src="https://img.shields.io/github/license/PranshulGG/WeatherMaster?style=for-the-badge&color=cba6f7&labelColor=302D41">
-      <img src="https://img.shields.io/github/last-commit/PranshulGG/WeatherMaster?style=for-the-badge&color=b1d18a&labelColor=1f3701">
-      <img src="https://img.shields.io/github/release/PranshulGG/WeatherMaster?style=for-the-badge&color=dbc66e&labelColor=3a3000">
-      <br>
-      <img src="https://img.shields.io/github/stars/PranshulGG/WeatherMaster?style=for-the-badge&color=ffb5a0&labelColor=561f0f">
-      <img src="https://img.shields.io/github/downloads/PranshulGG/WeatherMaster/total?label=Downloads&style=for-the-badge&color=aac7ff&labelColor=0a305f">
-      <a href="https://discord.gg/sSW2E4nqmn">
- <img src="https://img.shields.io/discord/1302477023410782229?label=Discord&style=for-the-badge&color=ffb0c8&labelColor=541d32">
-</a>
+# WeatherMaster 中国大陆网络优化版
 
-   </div>
-   <div align="center">
+这个项目是基于 [PranshulGG/WeatherMaster](https://github.com/PranshulGG/WeatherMaster) 的**二次分发**（基于 v3.11.0，上游 commit `11828aad`），只针对一件事做了修改：
 
-<img src="https://shields.rbtlog.dev/simple/com.pranshulgg.weather_master_app?style=for-the-badge" alt="RB Status">
-   </div>
+**在大陆地区，不挂代理 / VPN 也能正常刷新天气。**
 
-   <div align="center">
-   <h3>WeatherMaster: inspired by the Google Pixel weather app.</h3>
+原版本身很好用，问题出在一个跟天气完全无关的小环节上，下面说清楚。
 
-   </div>
- <div align="center">
+---
 
-[Features](https://github.com/PranshulGG/WeatherMaster?tab=readme-ov-file#-features) • [Contact](https://github.com/PranshulGG/WeatherMaster?tab=readme-ov-file#%EF%B8%8F-contact) • [License](https://github.com/PranshulGG/WeatherMaster?tab=readme-ov-file#%EF%B8%8F-license) • [Translate](https://github.com/PranshulGG/WeatherMaster?tab=readme-ov-file#-translate-the-app-on-crowdin)
- </div>
+## 到底卡在哪
 
-<div align="center">
- <a href="https://github.com/PranshulGG/WeatherMaster/releases"><img alt="GitHub" src="preview/get_on_github_btn.png" height="80"/></a>
-   <a href="https://apt.izzysoft.de/fdroid/index/apk/com.pranshulgg.weather_master_app"><img alt="GitHub" src="preview/get_on_izzy_btn.png" height="80"/></a>
-   <a href="https://play.google.com/store/apps/details?id=com.pranshulgg.weather_master"><img alt="GitHub" src="preview/get_on_googleplay_btn.png" height="80"/></a></div>
+打开首页的时候，App 的流程是这样的：
 
-<br>
+1. 先问手机「你现在在哪」（本地定位，不联网）；
+2. 再判断「你比上次记录的位置移动超过 1 公里了吗」；
+3. **如果移动了，就去问一个网站「我这个坐标是哪个城市」**；
+4. 问完之后，才去请求天气。
 
-![app_thumbnail](preview/new_thumbnail.png)
+第 3 步用的是 `nominatim.openstreetmap.org`（OpenStreetMap 的地名服务）。这个域名在国内是被墙的：DNS 会被污染成一些乱七八糟的 IP，TCP 连过去也没有任何回应。
 
-# 👁️ Screenshots
+而原版给这个请求设的超时是 **30 秒**。
 
-<div align="center">
-<img src="preview/preview_1.png"  width="250">
-<img src="preview/preview_2.png"  width="250">
-<img src="preview/preview_3.png"  width="250">
-<img src="preview/preview_4.png"  width="250">
+所以实际效果就是：**天气请求要排在这个注定失败的请求后面，干等 30 秒。**
 
-</div>
+我在自己手机（一加 12 / Android 16 / 不挂代理）上抓的日志时间线：
 
-<br>
+```
+18:31:10  App 进程启动
+18:31:11  向 nominatim 发请求，一直卡在 SYN-SENT（没有任何回应）
+18:31:41  30 秒超时，放弃
+18:31:43  天气数据才写进数据库
+```
 
-# 🌦️ Supported sources
+也就是说：**天气本身 1 秒就回来了，但你得为它等 32 秒。**
 
-- **Open Meteo**
-- **Met Norway**
-- **NWS**
-- **SMHI**
-- **DWD**
-- **Meteo-France**
-- **FMI**
-- **ECCC**
-- **BMKG**
-- **China**
-- **AccuWeather**
-- **Meteo AM**
-- **IPMA**
-- **WeatherApi.com**
-- **Gismeteo**
-- **Met Office**
-- **AEMET**
-- **IMD**
-- **WMO Severe Weather Information Centre**
-- **FOSS Public Alert Server**
-- **CWA**
-- **Pirate Weather**
-- **JMA**
-- **IMET**
-- **OpenWeather**
-- **MGM**
-- **KMI**
-- **MOENV**
-- **Meteofor**
-- _**And more to be added**_
+同一时刻我用手机直接测了几个域名：
 
-Some sources need a free API key from the provider before you can select them — add yours from a
-location's weather source picker, or from **Settings → Weather Sources → API key config**.
+| 域名 | 结果 |
+|---|---|
+| `api.open-meteo.com`（天气） | 200 / 1.79 s |
+| `air-quality-api.open-meteo.com`（空气质量） | 200 / 1.22 s |
+| `geocoding-api.open-meteo.com`（城市搜索） | 200 / 3.20 s |
+| `secure.geonames.org` | 200 / 0.82 s |
+| **`nominatim.openstreetmap.org`** | **不通** |
 
-# 🌐 Translate the app on [Crowdin](https://crowdin.com/project/weathermaster)
+所以不是天气服务器的问题，是地名查询把天气堵住了。一开代理它通了，一切就顺了——这就是「挂代理就好了」的真正原因。
 
-_**Feel free to open an issue if you want to request a language**_
+还有一个连带问题：**首页标题一直是一串坐标**（比如 `37.81195, 112.59257`），从来不显示城市名。原因是两层的：地名查询在国内根本不会成功；而且就算成功，原版把名字写进数据库之后，也没有同步刷新首页用的那份位置快照。
 
-<a href="https://crowdin.com/project/weathermaster" style="background-color: red"></a>
-[![ar-SA translation](https://img.shields.io/badge/dynamic/json?color=blue&label=ar-SA&style=flat&logo=crowdin&query=%24.progress.0.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![az translation](https://img.shields.io/badge/dynamic/json?color=blue&label=az&style=flat&logo=crowdin&query=%24.progress.1.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![bg translation](https://img.shields.io/badge/dynamic/json?color=blue&label=bg&style=flat&logo=crowdin&query=%24.progress.2.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![ca translation](https://img.shields.io/badge/dynamic/json?color=blue&label=ca&style=flat&logo=crowdin&query=%24.progress.3.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![cs translation](https://img.shields.io/badge/dynamic/json?color=blue&label=cs&style=flat&logo=crowdin&query=%24.progress.4.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![de translation](https://img.shields.io/badge/dynamic/json?color=blue&label=de&style=flat&logo=crowdin&query=%24.progress.5.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![el translation](https://img.shields.io/badge/dynamic/json?color=blue&label=el&style=flat&logo=crowdin&query=%24.progress.6.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![es-ES translation](https://img.shields.io/badge/dynamic/json?color=blue&label=es-ES&style=flat&logo=crowdin&query=%24.progress.7.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![fa translation](https://img.shields.io/badge/dynamic/json?color=blue&label=fa&style=flat&logo=crowdin&query=%24.progress.8.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![fi translation](https://img.shields.io/badge/dynamic/json?color=blue&label=fi&style=flat&logo=crowdin&query=%24.progress.9.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![fil translation](https://img.shields.io/badge/dynamic/json?color=blue&label=fil&style=flat&logo=crowdin&query=%24.progress.10.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![fr translation](https://img.shields.io/badge/dynamic/json?color=blue&label=fr&style=flat&logo=crowdin&query=%24.progress.11.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![hu translation](https://img.shields.io/badge/dynamic/json?color=blue&label=hu&style=flat&logo=crowdin&query=%24.progress.12.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![id translation](https://img.shields.io/badge/dynamic/json?color=blue&label=id&style=flat&logo=crowdin&query=%24.progress.13.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![it translation](https://img.shields.io/badge/dynamic/json?color=blue&label=it&style=flat&logo=crowdin&query=%24.progress.14.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![ja translation](https://img.shields.io/badge/dynamic/json?color=blue&label=ja&style=flat&logo=crowdin&query=%24.progress.15.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![ko translation](https://img.shields.io/badge/dynamic/json?color=blue&label=ko&style=flat&logo=crowdin&query=%24.progress.16.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![lt translation](https://img.shields.io/badge/dynamic/json?color=blue&label=lt&style=flat&logo=crowdin&query=%24.progress.17.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![nl translation](https://img.shields.io/badge/dynamic/json?color=blue&label=nl&style=flat&logo=crowdin&query=%24.progress.18.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![pl translation](https://img.shields.io/badge/dynamic/json?color=blue&label=pl&style=flat&logo=crowdin&query=%24.progress.19.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![pt-BR translation](https://img.shields.io/badge/dynamic/json?color=blue&label=pt-BR&style=flat&logo=crowdin&query=%24.progress.20.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![pt-PT translation](https://img.shields.io/badge/dynamic/json?color=blue&label=pt-PT&style=flat&logo=crowdin&query=%24.progress.21.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![ro translation](https://img.shields.io/badge/dynamic/json?color=blue&label=ro&style=flat&logo=crowdin&query=%24.progress.22.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![ru translation](https://img.shields.io/badge/dynamic/json?color=blue&label=ru&style=flat&logo=crowdin&query=%24.progress.23.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![sl translation](https://img.shields.io/badge/dynamic/json?color=blue&label=sl&style=flat&logo=crowdin&query=%24.progress.24.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![sr translation](https://img.shields.io/badge/dynamic/json?color=blue&label=sr&style=flat&logo=crowdin&query=%24.progress.25.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![sr-CS translation](https://img.shields.io/badge/dynamic/json?color=blue&label=sr-CS&style=flat&logo=crowdin&query=%24.progress.26.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![sv-SE translation](https://img.shields.io/badge/dynamic/json?color=blue&label=sv-SE&style=flat&logo=crowdin&query=%24.progress.27.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![th translation](https://img.shields.io/badge/dynamic/json?color=blue&label=th&style=flat&logo=crowdin&query=%24.progress.28.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![tr translation](https://img.shields.io/badge/dynamic/json?color=blue&label=tr&style=flat&logo=crowdin&query=%24.progress.29.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![uk translation](https://img.shields.io/badge/dynamic/json?color=blue&label=uk&style=flat&logo=crowdin&query=%24.progress.30.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![vi translation](https://img.shields.io/badge/dynamic/json?color=blue&label=vi&style=flat&logo=crowdin&query=%24.progress.31.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![zh-CN translation](https://img.shields.io/badge/dynamic/json?color=blue&label=zh-CN&style=flat&logo=crowdin&query=%24.progress.32.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![zh-TW translation](https://img.shields.io/badge/dynamic/json?color=blue&label=zh-TW&style=flat&logo=crowdin&query=%24.progress.33.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![ar-SA translation](https://img.shields.io/badge/dynamic/json?color=blue&label=ar-SA&style=flat&logo=crowdin&query=%24.progress.0.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![lt translation](https://img.shields.io/badge/dynamic/json?color=blue&label=lt&style=flat&logo=crowdin&query=%24.progress.18.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
-[![he translation](https://img.shields.io/badge/dynamic/json?color=blue&label=he&style=flat&logo=crowdin&query=%24.progress.12.data.translationProgress&url=https%3A%2F%2Fbadges.awesome-crowdin.com%2Fstats-16727791-741419.json)](https://crowdin.com/project/weathermaster)
+---
 
-# ✉️ Contact
+## 我改了什么
 
-For any questions or feedback, feel free to open an issue on GitHub or contact
-pranshul.devmain@gmail.com
+### 1. 把「问地名」从关键路径上拿下来
 
-# ©️ License
+原版是「问完地名 → 才请求天气」，我改成：
 
-This project is licensed under the GPL-3.0 license. See the `LICENSE` file for details.
+- 先把坐标存下来（本地操作，不联网）；
+- 地名查询丢到**后台协程**里慢慢搞，**最多等 5 秒**；
+- 天气该请求就请求，完全不等地名。
+
+涉及 `WeatherContextRepository.kt`；首次启动那条路径（`IntroScreenViewModel.kt`）也一并加了时限。
+
+### 2. 中国大陆的城市名改成离线解析
+
+既然联网查地名在国内大概率不通，那就干脆不联网：
+
+- 内置一份**中国行政区划中心点数据**（省 + 地级市/区，共 509 个点，31.8 KB）；
+- 拿到坐标后，在本地找最近的中心点，100 公里以内就用它的名字；
+- **市级优先于省级**（不然会显示「山西省」而不是「太原市」——这是我第一版踩的坑）；
+- 判断是不是在中国境内，用的是项目里本来就有的 `china.geo.json`。
+
+数据是从阿里云 DataV 的公开行政区划边界里提取的，生成脚本在 `tools/build_cn_places.py`，可以自己重新跑一遍。
+
+这步完全不联网、不上传坐标，也没有引入任何第三方库。
+
+### 3. 修掉「地名更新了，首页不刷新」
+
+`LocationManager.kt` 里，位置数据更新后只更新了位置列表，没更新首页正在用的 `activeLocation` 快照。现在会同步。
+
+### 4. 刷新转圈只跟天气走
+
+`WeatherManager.kt`：原来要等天气 + 空气质量 + 预警**全部**结束才停转圈，现在天气一到就停。
+
+---
+
+## 实测效果
+
+（一加 12 / Android 16 / 中国大陆 / 不挂代理 / Open-Meteo 数据源）
+
+|  | 原版 | 这个版本 |
+|---|---|---|
+| 首次添加位置 → 首页出天气 | 32 秒 | **4 秒** |
+| 冷启动 → 首页出现 | 受 30 秒阻塞影响 | **2 秒** |
+| 首页标题 | `37.81195, 112.59257` | **太原市** |
+| 刷新转圈 | 等天气 + 空气质量 + 预警 | 天气返回即结束 |
+
+天气数据源、空气质量源、预警源一个都没换；其他国家和地区的行为也没动（离线地名只在中国境内生效）。
+
+---
+
+## 下载
+
+去 Releases 页面下 `app-release.apk`。
+
+- 包名是 `com.pranshulgg.weather_master_app`，**和 Play 商店版不冲突**，可以两个都装；
+- 需要 Android 8.0（API 26）以上。
+
+## 自己编译
+
+需要：JDK 17+（我用的 21/25 都可以）、Android SDK（compileSdk 37）、Gradle 9.7（wrapper 里配好了）。
+
+1. `cp gradle.properties.sample gradle.properties`，按需填 API key（不填也能用 Open-Meteo 这类免费源）；
+2. `./gradlew assembleRelease`（Windows 用 `gradlew.bat`）；
+3. 产物在 `app/build/outputs/apk/release/`。
+
+> 小提示：项目路径别放在含中文的目录下，AGP 会直接拒绝构建（`android.overridePathCheck=true` 能绕过，但中间产物路径可能还会出问题）。
+
+## 已知限制
+
+- 地名精确到地级市/区，不是街道级；离最近城市中心超过 100 公里时退回显示坐标；
+- 地名固定中文，不随界面语言变化；
+- 台湾省的分级数据源当时返回 404，那片区域会退回省级名或坐标；
+- 如果你挂着代理，后台联网查地名仍然会跑（成功就覆盖离线名），这部分行为跟原版一致。
+
+## 致谢与许可
+
+- 上游：[PranshulGG/WeatherMaster](https://github.com/PranshulGG/WeatherMaster)，作者 Pranshul GG 以及所有贡献者；
+- 项目遵循 **GPL-3.0**，这个修改版**同样遵循 GPL-3.0**，源码就是本仓库，欢迎自己编译、也欢迎提 PR 合回上游；
+- 行政区划数据来源：阿里云 DataV.GeoAtlas（`geo.datav.aliyun.com`）；
+- 我只是针对大陆网络环境做了一点点适配，App 本身的功能、界面、数据源全是上游的功劳。
+
+## 修改清单
+
+完整的改动说明（含实测数据、逐个文件清单、给上游的同步建议）见 [CHANGES-CN.md](CHANGES-CN.md)。

@@ -16,3 +16,8 @@ local.properties
 /weathermaster.jks
 /.idea
 gradle.properties
+# 本地签名文件（私钥，绝不提交）
+keystore/
+*.jks
+*.keystore
+
