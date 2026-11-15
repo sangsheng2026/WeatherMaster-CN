@@ -4,6 +4,8 @@
 
 **在大陆地区，不挂代理 / VPN 也能正常刷新天气。**
 
+> 直接下载：**[Releases · 最新版 APK](https://github.com/sangsheng2026/WeatherMaster-CN/releases/latest)**
+
 原版本身很好用，问题出在一个跟天气完全无关的小环节上，下面说清楚。
 
 ---
@@ -102,7 +104,9 @@
 
 ## 下载
 
-去 Releases 页面下 `app-release.apk`。
+### 👉 [点这里下载 APK](https://github.com/sangsheng2026/WeatherMaster-CN/releases/latest)
+
+最新版文件名是 `WeatherMaster-CN-<版本号>.apk`。
 
 - 包名是 `com.pranshulgg.weather_master_app`，**和 Play 商店版不冲突**，可以两个都装；
 - 需要 Android 8.0（API 26）以上。
