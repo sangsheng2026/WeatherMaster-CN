@@ -60,6 +60,8 @@ WeatherManager.invoke()
 | `data/provider/devicelocation/ChinaOfflinePlaceIndex.kt`（新增） | 离线城市名索引：509 个中国省市中心点，取最近点（≤100km），市级优先于省级 | 中国大陆无需联网即可显示「太原市」这类地名 |
 | `app/src/main/assets/cn_places.json`（新增） | 紧凑的省市中心点数据（31.8 KB） | 同上 |
 | `core/di/AppModule.kt` | 为 `WeatherContextRepository` 补齐新依赖 | 依赖注入 |
+| `core/network/github/GithubApi.kt`、`feature/main/MainScreen.kt`、`feature/settings/about/AboutScreen.kt`、`feature/settings/sources/WeatherSourcesScreen.kt` | 更新检查与「源码 / 报告问题 / 新增数据源」链接从上游仓库改为本仓库 | 原版把更新检查的仓库地址写死成上游，导致装了这个修改版后仍被提示「有新版本」 |
+| `WeatherManager.kt`、`BaseRepository.kt` | 刷新失败时输出一行 `Log.e` | 便于排查「首页空白且没有提示」这类静默失败 |
 
 新增的离线索引完全在本地运行：不联网、不上传坐标、不引入新的第三方库。
 

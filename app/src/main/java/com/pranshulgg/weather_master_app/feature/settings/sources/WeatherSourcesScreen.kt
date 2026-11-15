@@ -1,4 +1,4 @@
-package com.pranshulgg.weather_master_app.feature.settings.sources
+﻿package com.pranshulgg.weather_master_app.feature.settings.sources
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -58,7 +58,7 @@ fun WeatherSourcesScreen(navController: NavController) {
             )
             Gap(5.dp)
             Button(onClick = {
-                uriHandler.openUri("https://github.com/PranshulGG/WeatherMaster/issues/new?template=new_source.yaml")
+                uriHandler.openUri("https://github.com/sangsheng2026/WeatherMaster-CN/issues/new?template=new_source.yaml")
             }, modifier = Modifier.padding(horizontal = 16.dp), shapes = ButtonDefaults.shapes()) {
                 Text(stringResource(R.string.action_request))
             }

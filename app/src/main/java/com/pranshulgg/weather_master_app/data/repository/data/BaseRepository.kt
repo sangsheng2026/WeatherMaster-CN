@@ -98,6 +98,11 @@ abstract class BaseRepository : WeatherRepository, AlertRepository, AirQualityRe
             } else WeatherDataPack(weather = cache)
 
         } catch (e: Exception) {
+            android.util.Log.e(
+                "BaseRepository",
+                "weather fetch failed: ${e.javaClass.name}: ${e.message}",
+                e
+            )
             return@withContext WeatherResult.Error(
                 exception = e.toAppException(),
                 weather = cache,

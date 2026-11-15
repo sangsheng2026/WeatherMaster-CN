@@ -122,6 +122,10 @@ class WeatherManager @Inject constructor(
                 if (elapsed < minLoadingTime) {
                     delay(duration = (minLoadingTime - elapsed).milliseconds)
                 }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                Log.e("WeatherManager", "weather refresh failed: ${e.javaClass.name}: ${e.message}", e)
             } finally {
                 externalManager.refreshWidgets()
                 externalManager.refreshNotifications()

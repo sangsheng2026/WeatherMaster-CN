@@ -23,7 +23,7 @@ data class GithubRepoDataJson(
 interface GithubApi {
 
 
-    @GET("PranshulGG/WeatherMaster/releases")
+    @GET("sangsheng2026/WeatherMaster-CN/releases")
     suspend fun fetchGithubRepos(): Response<List<GithubRepoDataJson>>
 
     companion object {

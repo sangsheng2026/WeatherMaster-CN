@@ -6,6 +6,10 @@
 
 > 直接下载：**[Releases · 最新版 APK](https://github.com/sangsheng2026/WeatherMaster-CN/releases/latest)**
 
+<div align="center">
+  <img src="preview/screenshot-cn.png" width="330" alt="中国大陆免代理首页截图">
+</div>
+
 原版本身很好用，问题出在一个跟天气完全无关的小环节上，下面说清楚。
 
 ---

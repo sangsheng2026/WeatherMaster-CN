@@ -52,7 +52,7 @@ data class MainScreenUiState(
     val isWeatherSourcesForLocationSheetOpen: Boolean = false,
     val isWeatherSourcesInfoForLocationSheetOpen: Boolean = false,
     val isNewVersionAvailable: Boolean = false,
-    val lastestVersionUrl: String = "https://github.com/PranshulGG/WeatherMaster/releases/latest",
+    val lastestVersionUrl: String = "https://github.com/sangsheng2026/WeatherMaster-CN/releases/latest",
     val isUnsupportedSourceDialogOpen: Boolean = false,
     val isChangelogSheetOpen: Boolean = false,
     val isGooglePlayStoreRelease: Boolean = BuildConfig.IS_PLAYSTORE_BUILD

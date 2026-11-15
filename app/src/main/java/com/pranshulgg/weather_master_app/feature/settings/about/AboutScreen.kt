@@ -79,13 +79,13 @@ fun AboutScreen(navController: NavController) {
                     .padding(paddingValues)
         ) {
             AppVersionTile(
-                description = "v${packageInfo.versionName} • ${packageInfo.versionCode}",
+                description = "v${packageInfo.versionName} 鈥?${packageInfo.versionCode}",
                 isLoadingNewVersion = isLoadingNewVersion,
                 onClick = {
                     scope.launch {
                         viewModel.isNewVersionAvailable(
                             "v${packageInfo.versionName}",
-                            onAction = { uriHandler.openUri("https://github.com/PranshulGG/WeatherMaster/releases/latest") })
+                            onAction = { uriHandler.openUri("https://github.com/sangsheng2026/WeatherMaster-CN/releases/latest") })
                     }
                 }
             )
@@ -111,7 +111,7 @@ fun AboutScreen(navController: NavController) {
                     SettingTile.ActionTile(
                         leading = { SettingsTileIcon(R.drawable.bug_report_24px) },
                         title = stringResource(R.string.about_create_issue),
-                        onClick = { uriHandler.openUri("https://github.com/PranshulGG/WeatherMaster/issues/new") }
+                        onClick = { uriHandler.openUri("https://github.com/sangsheng2026/WeatherMaster-CN/issues/new") }
                     ),
                     SettingTile.ActionTile(
                         leading = { SettingsTileIcon(R.drawable.text_snippet_24px) },
@@ -119,12 +119,6 @@ fun AboutScreen(navController: NavController) {
                         onClick = {
                             isChangelogSheetOpen = true
                         }
-                    ),
-                    SettingTile.ActionTile(
-                        leading = { SettingsTileIcon(R.drawable.mail_24px) },
-                        title = stringResource(R.string.about_email),
-                        description = "pranshul.devmain@gmail.com",
-                        onClick = { uriHandler.openUri("mailto:pranshul.devmain@gmail.com") }
                     ),
 
                     )
