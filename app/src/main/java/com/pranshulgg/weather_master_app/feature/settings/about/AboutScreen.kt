@@ -53,10 +53,6 @@ import kotlinx.coroutines.launch
 fun AboutScreen(navController: NavController) {
     val context = LocalContext.current
     val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-    val viewModel: AboutScreenViewModel = hiltViewModel()
-    val scope = rememberCoroutineScope()
-
-    val isLoadingNewVersion = viewModel.loading
     val uriHandler = LocalUriHandler.current
 
     var isChangelogSheetOpen by remember { mutableStateOf(false) }
@@ -79,15 +75,7 @@ fun AboutScreen(navController: NavController) {
                     .padding(paddingValues)
         ) {
             AppVersionTile(
-                description = "v${packageInfo.versionName} · Build ${packageInfo.versionCode}",
-                isLoadingNewVersion = isLoadingNewVersion,
-                onClick = {
-                    scope.launch {
-                        viewModel.isNewVersionAvailable(
-                            "v${packageInfo.versionName}",
-                            onAction = { uriHandler.openUri("https://github.com/sangsheng2026/WeatherMaster-CN/releases/latest") })
-                    }
-                }
+                description = "v${packageInfo.versionName} · Build ${packageInfo.versionCode}"
             )
             Gap(10.dp)
             SettingSection(
@@ -141,9 +129,7 @@ fun AboutScreen(navController: NavController) {
 
 @Composable
 private fun AppVersionTile(
-    description: String,
-    onClick: () -> Unit,
-    isLoadingNewVersion: Boolean = false
+    description: String
 ) {
 
     Surface(
@@ -177,18 +163,6 @@ private fun AppVersionTile(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
-            },
-            trailingContent = {
-                IconButton(
-                    enabled = !isLoadingNewVersion,
-                    onClick = onClick,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
-                    ),
-                    shapes = IconButtonDefaults.shapes()
-                ) {
-                    Symbol(R.drawable.refresh_24px, color = MaterialTheme.colorScheme.onTertiary)
-                }
             }
         )
     }

@@ -122,3 +122,18 @@ WeatherManager.invoke()
 | `res/values*/strings.xml` | `setting_background_updates_secondary` 描述去掉「更新间隔」 | 与精简后的页面一致 |
 
 注意：`AppPrefs` 的默认值只对**全新安装**生效，已保存的偏好不会被覆盖。
+
+---
+
+## 九、3.11.0-cn3 增量修改（2026-11-16）
+
+| 文件 | 改动 | 原因 |
+|---|---|---|
+| `feature/main/MainScreenViewModel.kt` | 删除 `init` 里的 `checkForUpdates()`、`checkForUpdates()` 函数本身，以及 `GithubRepository` / `@ApplicationContext Context` 两个构造依赖 | 启动时不再做更新检查 |
+| `feature/main/MainScreen.kt` | 删除监听 `uiState.isNewVersionAvailable` 的 `LaunchedEffect`（弹 snackbar 那段） | 不再弹「有新版本可用」 |
+| `feature/settings/about/AboutScreen.kt` | 版本卡片去掉刷新按钮与 `AboutScreenViewModel` 调用，只保留「名称 + 版本号」 | 同上，关于页不再触发检查 |
+| `feature/settings/background/BackgroundUpdatesScreen.kt` | 删除「显示『有新版本可用』提示」开关 | 该开关已无意义 |
+| `core/utils/weather/cache/WeatherCachePolicy.kt` | `shouldReturnWeatherCache()`：手动刷新直接返回 `ERROR`（走网络），删掉 `REFRESH_TOO_EARLY` 分支 | 去掉「请在 15 分钟后再刷新」的冷却限制 |
+| `app/build.gradle.kts` | `versionName = 3.11.0-cn3`、`versionCode = 70` | |
+
+**关于误报新版本的根因**：原逻辑是 `firstTag != currentTag` —— 只判断「线上最新 tag 是否等于本地 tag」，而不是「线上是否比本地新」。当本地构建比 Release 新（比如刚编完还没发布），它会判定为「有新版本」；并且该结果会以 `currentTag/lastFetchedTag` 写进数据库缓存 2 小时，于是**每次打开都重复提示**。cn3 直接把检查去掉了，不去修这个比较逻辑。

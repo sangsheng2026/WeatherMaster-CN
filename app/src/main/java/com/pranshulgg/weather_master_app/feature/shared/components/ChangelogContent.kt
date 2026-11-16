@@ -41,19 +41,21 @@ fun ChangelogContent(hideSheet: () -> Unit) {
         ) {
             Gap(5.dp)
             ChangelogBox {
-                ChangelogHeader("本版新增")
+                ChangelogHeader("本版（3.11.0-cn3）")
+                ChangelogText("不再检查新版本，也不再弹「有新版本可用」提示")
+                ChangelogText("手动刷新不再有 15 分钟冷却，想刷就刷")
+            }
+            ChangelogBox {
+                ChangelogHeader("上一版（3.11.0-cn2）")
                 ChangelogText("位置在中国时，天气数据源默认使用中国天气网，不用再手动改")
                 ChangelogText("设置里的「支持」换成了「项目仓库」，可以直接跳去看源码、下载新版、提 issue")
                 ChangelogText("服务条款与隐私政策改成中文，并按本分发版的实际情况重写")
                 ChangelogText("外观默认值调整：跟随系统主题、开启动态配色、关闭小青蛙布局")
-            }
-            ChangelogBox {
-                ChangelogHeader("精简")
                 ChangelogText("「后台更新」页只保留电池优化等工具，去掉自动刷新开关和更新间隔")
                 ChangelogText("移除「加入 Discord 社区」入口")
             }
             ChangelogBox {
-                ChangelogHeader("上一版（3.11.0-cn1）")
+                ChangelogHeader("3.11.0-cn1")
                 ChangelogText("地名查询不再阻塞天气请求，首次加载从 32 秒降到 4 秒")
                 ChangelogText("内置 509 个中国省市中心点，城市名改为离线解析")
                 ChangelogText("修复首页地名更新后不刷新的问题")

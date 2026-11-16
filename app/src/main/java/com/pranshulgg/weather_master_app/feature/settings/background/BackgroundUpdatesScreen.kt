@@ -18,9 +18,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.pranshulgg.weather_master_app.BuildConfig
 import com.pranshulgg.weather_master_app.R
-import com.pranshulgg.weather_master_app.core.prefs.LocalAppPrefs
 import com.pranshulgg.weather_master_app.core.prefs.helper.PreferencesHelper
 import com.pranshulgg.weather_master_app.core.ui.components.LargeTopBarScaffold
 import com.pranshulgg.weather_master_app.core.ui.components.NavigateUpBtn
@@ -36,8 +34,6 @@ import com.pranshulgg.weather_master_app.feature.settings.background.batteryopti
 @Composable
 fun BackgroundUpdatesScreen(navController: NavController) {
     val context = LocalContext.current
-
-    val prefs = LocalAppPrefs.current
 
     val uriHandler = LocalUriHandler.current
 
@@ -95,15 +91,6 @@ fun BackgroundUpdatesScreen(navController: NavController) {
                             BatteryOptimizationHelper.requestDisableBatteryOptimization(context)
                         }
                     ),
-                    if (!BuildConfig.IS_PLAYSTORE_BUILD) {
-                        SettingTile.SwitchTile(
-                            title = "显示「有新版本可用」提示",
-                            checked = prefs.isNewVersionMessageEnabled,
-                            onCheckedChange = {
-                                prefs.setNewVersionMessageEnabled(it)
-                            }
-                        )
-                    } else null,
                     SettingTile.ActionTile(
                         leading = { SettingsTileIcon(R.drawable.help_24px) },
                         title = stringResource(R.string.setting_dontkillmyapp_title),

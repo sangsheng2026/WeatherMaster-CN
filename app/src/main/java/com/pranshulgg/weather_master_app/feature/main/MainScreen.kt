@@ -121,21 +121,6 @@ fun MainScreen(navController: NavController, weatherViewModel: WeatherViewModel)
         }
     }
 
-    LaunchedEffect(uiState.isNewVersionAvailable) {
-        if (uiState.isNewVersionAvailable && prefs.isNewVersionMessageEnabled) {
-            SnackbarManager.show(
-                R.string.message_new_version_available,
-                actionLabel = R.string.action_view,
-                onAction = {
-                    uriHandler.openUri(uiState.lastestVersionUrl)
-                },
-                duration = SnackbarDuration.Indefinite
-            )
-
-            viewModel.dismissNewVersionSnackbar()
-        }
-    }
-
     LaunchedEffect(Unit) {
 
         if (BuildConfig.APP_VERSION != savedVersion) {

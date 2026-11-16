@@ -56,12 +56,12 @@ fun shouldReturnWeatherCache(
     val ageMillis = System.currentTimeMillis() - cacheMilli
     val ageMinutes = TimeUnit.MILLISECONDS.toMinutes(ageMillis)
 
-    val tooEarly = isManualRefresh && ageMinutes < MANUAL_REFRESH_MINUTES
-    val maxAge = if (isManualRefresh) MANUAL_REFRESH_MINUTES else AUTO_REFRESH_MAX_MINUTES
+    // Manual refresh always goes to the network: this build intentionally has no
+    // "please retry in N minutes" cooldown (the fixed 15-minute notice that used to
+    // show up on pull-to-refresh).
+    if (isManualRefresh) return WeatherResultType.ERROR
 
-    if (tooEarly) return WeatherResultType.REFRESH_TOO_EARLY
-
-    val shouldReturnCache = ageMinutes < maxAge
+    val shouldReturnCache = ageMinutes < AUTO_REFRESH_MAX_MINUTES
 
     return if (shouldReturnCache) WeatherResultType.SUCCESS else WeatherResultType.ERROR
 }
