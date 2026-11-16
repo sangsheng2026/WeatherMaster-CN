@@ -67,7 +67,10 @@ data class AppPrefsState(
     val setDateFormat: (String) -> Unit,
 
     val isNewVersionMessageEnabled: Boolean,
-    val setNewVersionMessageEnabled: (Boolean) -> Unit
+    val setNewVersionMessageEnabled: (Boolean) -> Unit,
+
+    val isPredictiveBackEnabled: Boolean,
+    val setPredictiveBackEnabled: (Boolean) -> Unit
 )
 
 

@@ -137,3 +137,18 @@ WeatherManager.invoke()
 | `app/build.gradle.kts` | `versionName = 3.11.0-cn3`、`versionCode = 70` | |
 
 **关于误报新版本的根因**：原逻辑是 `firstTag != currentTag` —— 只判断「线上最新 tag 是否等于本地 tag」，而不是「线上是否比本地新」。当本地构建比 Release 新（比如刚编完还没发布），它会判定为「有新版本」；并且该结果会以 `currentTag/lastFetchedTag` 写进数据库缓存 2 小时，于是**每次打开都重复提示**。cn3 直接把检查去掉了，不去修这个比较逻辑。
+
+---
+
+## 十、3.11.0-cn4 增量修改（2026-11-16）
+
+| 文件 | 改动 | 原因 |
+|---|---|---|
+| `core/ui/navigation/PredictiveBackController.kt`（新增） | 反射调用 `OnBackPressedDispatcher.setOnBackInvokedDispatcher(null / window.onBackInvokedDispatcher)`，运行时解除/恢复与窗口 `OnBackInvokedDispatcher` 的绑定 | 关闭后系统拿不到 back 动画回调，侧滑返回退回普通返回路径，没有预览动画；恢复绑定时无需重启 |
+| `MainActivity.kt` | `super.onCreate` 之后 `attach(this)` + 按偏好 `setEnabled(...)` | 启动时应用开关状态 |
+| `core/prefs/AppPrefs.kt`、`AppPrefsState.kt` | 新增 `isPredictiveBackEnabled`（默认 `true`）及 setter | 持久化开关 |
+| `feature/settings/appearance/AppearanceScreen.kt` | 「布局」分组新增「预测性返回手势」开关，切换时即时调用 controller | 用户可在设置里关掉 |
+| `core/ui/navigation/NavTransitions.kt` | 转场由纯 fade（550/400ms）改为短距离 slide + fade（push 280/240ms，pop 240/260ms） | 原来的整页慢淡出叠在系统预测预览上，松手后有明显"停半拍"，且没有方向感 |
+| `app/build.gradle.kts` | `versionName = 3.11.0-cn4`、`versionCode = 71` | |
+
+**实现说明**：`android:enableOnBackInvokedCallback` 是 manifest 静态属性，运行时无法直接改，所以这里走的是 AndroidX `OnBackPressedDispatcher` 与窗口 dispatcher 的绑定关系——该 setter 在平台类上是 public、被 AndroidX 标了 `@RestrictTo`，因此用反射调用并 `runCatching` 兜底：万一将来版本移除该方法，开关退化为无操作，不会崩溃。Android 13 以下（API < 33）本身没有预测性返回，开关不产生行为。

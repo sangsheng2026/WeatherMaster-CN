@@ -3,6 +3,7 @@ package com.pranshulgg.weather_master_app.feature.settings.appearance
 import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.LocalActivity
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -29,6 +30,7 @@ import com.pranshulgg.weather_master_app.core.ui.components.SettingTile
 import com.pranshulgg.weather_master_app.core.ui.components.SettingsTileIcon
 import com.pranshulgg.weather_master_app.core.ui.components.tiles.DialogOption
 import com.pranshulgg.weather_master_app.core.ui.navigation.NavRoutes
+import com.pranshulgg.weather_master_app.core.ui.navigation.PredictiveBackController
 import com.pranshulgg.weather_master_app.feature.settings.appearance.components.ColorPickerBtn
 
 @Composable
@@ -57,7 +59,7 @@ fun AppearanceScreen(navController: NavController) {
     )
 
 
-    val activity = LocalActivity.current as Activity
+    val activity = LocalActivity.current as ComponentActivity
 
     LargeTopBarScaffold(
         title = stringResource(R.string.setting_appearance),
@@ -206,6 +208,16 @@ fun AppearanceScreen(navController: NavController) {
                         checked = prefs.isTabletLayoutEnabled,
                         onCheckedChange = { checked ->
                             prefs.setTabletLayout(checked)
+                        }
+                    ),
+                    SettingTile.SwitchTile(
+                        leading = { SettingsTileIcon(R.drawable.arrow_back_24px) },
+                        title = "预测性返回手势",
+                        description = "侧滑返回时显示页面预览动画；关闭后为普通返回",
+                        checked = prefs.isPredictiveBackEnabled,
+                        onCheckedChange = { checked ->
+                            prefs.setPredictiveBackEnabled(checked)
+                            PredictiveBackController.setEnabled(activity, checked)
                         }
                     )
                 )

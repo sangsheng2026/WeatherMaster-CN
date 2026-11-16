@@ -45,6 +45,8 @@ object AppPrefs {
 
     private val _isNewVersionMessageEnabled = mutableStateOf(true)
 
+    private val _isPredictiveBackEnabled = mutableStateOf(true)
+
 
     fun initPrefs(context: Context) {
         PreferencesHelper.init(context)
@@ -97,6 +99,9 @@ object AppPrefs {
 
         _isNewVersionMessageEnabled.value =
             PreferencesHelper.getBool("isNewVersionMessageEnabled") ?: true
+
+        _isPredictiveBackEnabled.value =
+            PreferencesHelper.getBool("isPredictiveBackEnabled") ?: true
 
     }
 
@@ -227,6 +232,12 @@ object AppPrefs {
         setNewVersionMessageEnabled = {
             _isNewVersionMessageEnabled.value = it
             PreferencesHelper.setBool("isNewVersionMessageEnabled", it)
+        },
+
+        isPredictiveBackEnabled = _isPredictiveBackEnabled.value,
+        setPredictiveBackEnabled = {
+            _isPredictiveBackEnabled.value = it
+            PreferencesHelper.setBool("isPredictiveBackEnabled", it)
         }
     )
 }

@@ -41,7 +41,12 @@ fun ChangelogContent(hideSheet: () -> Unit) {
         ) {
             Gap(5.dp)
             ChangelogBox {
-                ChangelogHeader("本版（3.11.0-cn3）")
+                ChangelogHeader("本版（3.11.0-cn4）")
+                ChangelogText("新增「预测性返回手势」开关：外观 → 布局里可以关掉边滑返回的预览动画")
+                ChangelogText("调整页面进入/返回的转场：改为短距离滑动配合淡入淡出，不再是从头到尾的慢淡出")
+            }
+            ChangelogBox {
+                ChangelogHeader("3.11.0-cn3")
                 ChangelogText("不再检查新版本，也不再弹「有新版本可用」提示")
                 ChangelogText("手动刷新不再有 15 分钟冷却，想刷就刷")
             }

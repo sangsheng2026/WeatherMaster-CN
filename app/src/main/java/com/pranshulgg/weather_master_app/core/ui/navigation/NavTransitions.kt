@@ -9,35 +9,43 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 
+/**
+ * Navigation transitions.
+ *
+ * Keep these short and directional: during a predictive-back gesture the platform already
+ * scales the page down, so a long full-screen fade on top of it felt like the page "hung"
+ * for half a second after the finger was lifted. A small offset plus a quick fade keeps the
+ * gesture and the committed transition on the same visual direction.
+ */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object NavTransitions {
 
-    private const val FADE_IN = 550
-    private const val FADE_OUT = 400
+    private const val ENTER_DURATION = 280
+    private const val EXIT_DURATION = 240
+    private const val POP_ENTER_DURATION = 240
+    private const val POP_EXIT_DURATION = 260
 
-    fun enter(): EnterTransition = fadeIn(tween(FADE_IN))
-//        slideInHorizontally(
-//            animationSpec = tween(FADE_IN),
-//            initialOffsetX = { 1 * it }
-//        ) + fadeIn(tween(FADE_IN))
+    fun enter(): EnterTransition =
+        slideInHorizontally(
+            animationSpec = tween(ENTER_DURATION),
+            initialOffsetX = { it / 8 }
+        ) + fadeIn(tween(ENTER_DURATION))
 
-    fun exit(): ExitTransition = fadeOut(tween(FADE_OUT))
-//        slideOutHorizontally(
-//            animationSpec = tween(FADE_OUT),
-//            targetOffsetX = { 1 * -it / 4 }
-//        ) + fadeOut(tween(FADE_OUT))
+    fun exit(): ExitTransition =
+        slideOutHorizontally(
+            animationSpec = tween(EXIT_DURATION),
+            targetOffsetX = { -it / 12 }
+        ) + fadeOut(tween(EXIT_DURATION))
 
-    @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-    fun popEnter(): EnterTransition = fadeIn(tween(FADE_IN))
-//        slideInHorizontally(
-//            animationSpec = tween(FADE_IN),
-//            initialOffsetX = { 1 * -it / 4 }
-//        ) + fadeIn(tween(FADE_IN))
+    fun popEnter(): EnterTransition =
+        slideInHorizontally(
+            animationSpec = tween(POP_ENTER_DURATION),
+            initialOffsetX = { -it / 12 }
+        ) + fadeIn(tween(POP_ENTER_DURATION))
 
-    @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-    fun popExit(): ExitTransition = fadeOut(tween(FADE_OUT))
-//        slideOutHorizontally(
-//            animationSpec = tween(FADE_OUT),
-//            targetOffsetX = { 1 * it }
-//        ) + fadeOut(tween(FADE_OUT))
+    fun popExit(): ExitTransition =
+        slideOutHorizontally(
+            animationSpec = tween(POP_EXIT_DURATION),
+            targetOffsetX = { it / 8 }
+        ) + fadeOut(tween(POP_EXIT_DURATION))
 }
