@@ -285,6 +285,15 @@ fun getSourcesForCountry(countryCode: String?): List<Source> {
 }
 
 /**
+ * Source used when the user has not picked one explicitly.
+ * China gets the regional source by default because the global one is
+ * frequently unreachable from mainland networks.
+ */
+fun defaultWeatherSourceFor(countryCode: String?): Source {
+    return if (countryCode?.uppercase() == "CN") Source.CHINA else Source.OPEN_METEO
+}
+
+/**
  * Any source that has global coverage,
  * including regional sources with global data,
  * must be added here.

@@ -95,3 +95,30 @@ WeatherManager.invoke()
 2. `fix: keep active location in sync`
 3. `fix: stop refresh indicator at core weather result`
 4. `feat: offline reverse geocoding for China`
+
+---
+
+## 八、3.11.0-cn2 增量修改（2026-11-16）
+
+这一版只动界面与默认值，不涉及数据源实现。
+
+| 文件 | 改动 | 原因 |
+|---|---|---|
+| `core/model/sources/Source.kt`（新增函数） | `defaultWeatherSourceFor(countryCode)`：中国返回 `Source.CHINA`，其他地区返回 `Source.OPEN_METEO` | 统一「默认数据源」的判断 |
+| `feature/intro/IntroScreenViewModel.kt` | 保存设备位置时按境内判断写入 `source`（原版硬编码 `OPEN_METEO`） | 首次安装添加位置时，中国用户直接拿到国内数据源 |
+| `feature/editlocation/EditLocationScreen.kt` | 编辑位置页的「天气数据源」在 `countryCode == CN` 且当前为 `OPEN_METEO` 时显示并保存为 `CHINA` | 老用户点开「笔」即可切到国内源 |
+| `feature/settings/SettingsScreen.kt` | 「支持」条目替换为「项目仓库」（GitHub 图标 + 仓库链接）；移除 Discord 条目；删除捐赠对话框与相关代码 | 二次分发不应再有原作者赞助入口 |
+| `feature/settings/background/BackgroundUpdatesScreen.kt` | 删除「更新」分组（后台更新开关）与「更新间隔」；保留后台任务信息 / Gadgetbridge / 电池优化 / 新版本提示 / 帮助 | 页面精简 |
+| `feature/settings/background/WorkerInfoScreen.kt` | 文案中文化 | |
+| `feature/settings/appearance/AppearanceScreen.kt` | 「Tablet layout」中文化 | |
+| `feature/settings/notifications/NotificationsScreen.kt` | 「Alert notifications」中文化 | |
+| `feature/apikeyconfig/ApiKeysConfigScreen.kt`、`feature/main/ui/MainScreenDialogs.kt` | 提示文案中文化 | |
+| `feature/settings/about/AboutScreen.kt` | 版本卡片改名「WeatherMaster 大陆版」，副标题改为 `v<versionName> · Build <versionCode>`；新增「项目仓库」入口；修复版本号分隔符乱码 | |
+| `feature/settings/about/terms/TermsConditionsScreen.kt` | 全文重写为中文，并按 GPL-3.0 二次分发说明权责；联系方式改为仓库 issue | 原版条款是英文且指向原作者邮箱 |
+| `feature/settings/about/privacy/PrivacyPolicyScreen.kt` | 全文重写为中文，补充「中国境内城市名离线解析、不联网」的说明 | 同上 |
+| `feature/shared/components/ChangelogContent.kt` | 更新日志改为本项目的中文变更记录；标题前缀 `#` 去掉 | 原版日志是上游英文 |
+| `core/prefs/AppPrefs.kt` | 默认值调整：`appTheme = System`、`isDynamicTheme = true`、`isFroggyLayout = false` | 与维护者的日常设置一致 |
+| `app/build.gradle.kts` | `versionName = 3.11.0-cn2`、`versionCode = 69` | |
+| `res/values*/strings.xml` | `setting_background_updates_secondary` 描述去掉「更新间隔」 | 与精简后的页面一致 |
+
+注意：`AppPrefs` 的默认值只对**全新安装**生效，已保存的偏好不会被覆盖。

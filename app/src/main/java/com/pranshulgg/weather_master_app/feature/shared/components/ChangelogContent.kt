@@ -27,7 +27,7 @@ import com.pranshulgg.weather_master_app.core.ui.components.Gap
 fun ChangelogContent(hideSheet: () -> Unit) {
     Column(Modifier.heightIn(max = 700.dp)) {
         Text(
-            "Changelog ${BuildConfig.APP_VERSION}",
+            "更新记录 ${BuildConfig.APP_VERSION}",
             modifier = Modifier.padding(16.dp),
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
@@ -41,44 +41,27 @@ fun ChangelogContent(hideSheet: () -> Unit) {
         ) {
             Gap(5.dp)
             ChangelogBox {
-                ChangelogHeader("New stuff")
-                ChangelogText("New sources:")
-                ChangelogSubText("MGM (Turky) Alerts/Weather #1079")
-                ChangelogSubText("KMI (Belgium) Alerts/Weather #997, #381, #1122")
-                ChangelogSubText("MOENV (Taiwan) Air Quality source by @reveler-hub")
-                ChangelogSubText("Meteofor (Ukraine) Weather by @reveler-hub")
-                ChangelogText("Point Met Office's API key link to the right DataHub product by @reveler-hub")
-                ChangelogText("Option added to receive notifications for weather alerts. Can be turned on in Settings → Notifications #316")
-                ChangelogText("Custom date format #1142")
-                ChangelogText("Add an option to disable the “New version available” message (Only Github versions)")
+                ChangelogHeader("本版新增")
+                ChangelogText("位置在中国时，天气数据源默认使用中国天气网，不用再手动改")
+                ChangelogText("设置里的「支持」换成了「项目仓库」，可以直接跳去看源码、下载新版、提 issue")
+                ChangelogText("服务条款与隐私政策改成中文，并按本分发版的实际情况重写")
+                ChangelogText("外观默认值调整：跟随系统主题、开启动态配色、关闭小青蛙布局")
             }
             ChangelogBox {
-                ChangelogHeader("Fixed")
-                ChangelogText("Correctly map met office temperature values by @fardog")
-                ChangelogText("Handle null temperature values in widget @fardog")
-                ChangelogText("Use the day precipitation probability for Met Office's daily max by @reveler-hub")
-                ChangelogText("Fix infinite loading when exiting Edit Location without changing anything")
-                ChangelogText("Fix air-quality API key lookup using the wrong source by @reveler-hub")
-                ChangelogText("Fix alert API key lookup using the wrong source")
-                ChangelogText("Fix SMHI 404 for coordinates with more than 6 decimals by @nikiosna")
-                ChangelogText("Fix Gismeteo location lookup sending wrong query parameter by @reveler-hub")
-                ChangelogText("Fix widget dates not opening calendar apps when clicked")
-                ChangelogText("Fix issues where errors would not display if the API key is missing or not set")
-                ChangelogText("NWS fix: hourly forecast shows sun icons after sunset until midnight after an evening refresh by @GaijinSystems #1199")
-                ChangelogText("ECCC: fix forecast dates around new year by @GaijinSystems")
-                ChangelogText("Fixed crashes on the alert and notification screens caused by a null location")
-                ChangelogText("Fixed crashes when the current location was not found")
-
+                ChangelogHeader("精简")
+                ChangelogText("「后台更新」页只保留电池优化等工具，去掉自动刷新开关和更新间隔")
+                ChangelogText("移除「加入 Discord 社区」入口")
             }
             ChangelogBox {
-                ChangelogHeader("Improvements")
-                ChangelogText("Remove max width/height for \"Weather 1\" widget by @fardog")
-                ChangelogText("Updated all translations")
-                ChangelogText("Add OneCall 4.0 API support to OpenWeather source #1119 @reveler-hub")
-                ChangelogText("ECCC: keep today in daily forecast after its daytime period ends by @GaijinSystems")
-                ChangelogText("Removed notification sounds for background updates and scheduled notifications #1211")
-                ChangelogText("Added missing strings")
-
+                ChangelogHeader("上一版（3.11.0-cn1）")
+                ChangelogText("地名查询不再阻塞天气请求，首次加载从 32 秒降到 4 秒")
+                ChangelogText("内置 509 个中国省市中心点，城市名改为离线解析")
+                ChangelogText("修复首页地名更新后不刷新的问题")
+                ChangelogText("刷新转圈只跟天气请求走")
+            }
+            ChangelogBox {
+                ChangelogHeader("说明")
+                ChangelogText("本项目基于上游 WeatherMaster，上游的完整更新日志见项目仓库 Releases 页面")
             }
         }
 
@@ -139,7 +122,7 @@ private fun ChangelogSubText(text: String) {
 @Composable
 private fun ChangelogHeader(text: String) {
     Text(
-        "# $text",
+        text,
         color = MaterialTheme.colorScheme.secondary,
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(bottom = 3.dp)

@@ -59,7 +59,7 @@ fun WorkerInfoScreen(navController: NavController) {
 
 
     LargeTopBarScaffold(
-        title = "Worker info",
+        title = "后台任务信息",
         navigationIcon = { NavigateUpBtn(navController) },
     ) { paddingValues ->
         Column(
@@ -75,8 +75,8 @@ fun WorkerInfoScreen(navController: NavController) {
             SettingSection(
                 tiles = listOf(
                     SettingTile.TextTile(
-                        title = "Last successful run",
-                        description = if (lastRun == null) "Never" else formatter(lastRun)
+                        title = "上次成功运行",
+                        description = if (lastRun == null) "从未运行" else formatter(lastRun)
                     )
                 )
             )
@@ -85,15 +85,15 @@ fun WorkerInfoScreen(navController: NavController) {
                     title = enqueued.state.name,
                     tiles = listOf(
                         SettingTile.TextTile(
-                            title = "Run attempt",
+                            title = "尝试次数",
                             description = enqueued.runAttemptCount.toString(),
                         ),
                         SettingTile.TextTile(
-                            title = "Tags",
+                            title = "任务标记",
                             description = enqueued.tags.toString(),
                         ),
                         SettingTile.TextTile(
-                            title = "Next schedule",
+                            title = "下次计划时间",
                             description = formatter(enqueued.nextScheduleTimeMillis),
                         ),
                     )
@@ -104,11 +104,11 @@ fun WorkerInfoScreen(navController: NavController) {
                     title = cancelled.state.name,
                     tiles = listOf(
                         SettingTile.TextTile(
-                            title = "Run attempt",
+                            title = "尝试次数",
                             description = cancelled.runAttemptCount.toString(),
                         ),
                         SettingTile.TextTile(
-                            title = "Tags",
+                            title = "任务标记",
                             description = cancelled.tags.toString(),
                         ),
                     )
@@ -119,11 +119,11 @@ fun WorkerInfoScreen(navController: NavController) {
                     title = succeeded.state.name,
                     tiles = listOf(
                         SettingTile.TextTile(
-                            title = "Run attempt",
+                            title = "尝试次数",
                             description = succeeded.runAttemptCount.toString(),
                         ),
                         SettingTile.TextTile(
-                            title = "Tags",
+                            title = "任务标记",
                             description = succeeded.tags.toString(),
                         ),
                     )
@@ -134,11 +134,11 @@ fun WorkerInfoScreen(navController: NavController) {
                     title = failed.state.name,
                     tiles = listOf(
                         SettingTile.TextTile(
-                            title = "Run attempt",
+                            title = "尝试次数",
                             description = failed.runAttemptCount.toString(),
                         ),
                         SettingTile.TextTile(
-                            title = "Tags",
+                            title = "任务标记",
                             description = failed.tags.toString(),
                         ),
                     )

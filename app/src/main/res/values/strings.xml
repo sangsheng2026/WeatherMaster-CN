@@ -211,7 +211,7 @@
 
     <string name="weather_total_amount">Total amount</string>
     <string name="setting_background_updates">Background updates</string>
-    <string name="setting_background_updates_secondary">Update interval, battery optimization, help</string>
+    <string name="setting_background_updates_secondary">Battery optimization, help</string>
 
     <string name="setting_notification_permission_req">Notification permission required</string>
     <string name="setting_notification_permission_secondary">The app sends you a notification whenever the weather updates in the background</string>

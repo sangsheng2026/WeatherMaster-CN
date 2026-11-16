@@ -39,6 +39,7 @@ import com.pranshulgg.weather_master_app.R
 import com.pranshulgg.weather_master_app.core.model.domain.location.Location
 import com.pranshulgg.weather_master_app.core.model.domain.weather.ApiKey
 import com.pranshulgg.weather_master_app.core.model.sources.Source
+import com.pranshulgg.weather_master_app.core.model.sources.defaultWeatherSourceFor
 import com.pranshulgg.weather_master_app.core.model.weather.openmeteo.OpenMeteoModel
 import com.pranshulgg.weather_master_app.core.ui.components.Gap
 import com.pranshulgg.weather_master_app.core.ui.components.LargeTopBarScaffold
@@ -109,8 +110,17 @@ fun EditLocationScreen(
 
     var currentLocationName by remember { mutableStateOf(locationName) }
 
+    // Inside China the global source is often unreachable, so show/persist the
+    // regional source unless the user already picked something else.
+    val suggestedWeatherSource =
+        if (locations.activeLocation.source == Source.OPEN_METEO) {
+            defaultWeatherSourceFor(locations.activeLocation.countryCode)
+        } else {
+            locations.activeLocation.source
+        }
+
     val effectiveWeatherSource =
-        uiState.selectedWeatherSource ?: locations.activeLocation.source
+        uiState.selectedWeatherSource ?: suggestedWeatherSource
 
     val effectiveOpenMeteoModel =
         uiState.selectedOpenMeteoModel
@@ -195,11 +205,7 @@ fun EditLocationScreen(
                             viewModel.showWeatherSourcesForLocationSheet()
                         },
                         trailing = {
-                            val showButton = if (uiState.selectedWeatherSource != null)
-                                uiState.selectedWeatherSource == Source.OPEN_METEO else
-                                locations.activeLocation.source == Source.OPEN_METEO
-
-                            if (showButton) {
+                            if (effectiveWeatherSource == Source.OPEN_METEO) {
                                 IconButton(
                                     onClick = viewModel::showOpenMeteoModelsSheet,
                                     shapes = IconButtonDefaults.shapes()
@@ -248,7 +254,7 @@ fun EditLocationScreen(
                         )
                         viewModel.updateSources(
                             locations.activeLocation,
-                            uiState.selectedWeatherSource ?: locations.activeLocation.source,
+                            uiState.selectedWeatherSource ?: effectiveWeatherSource,
                             uiState.selectedAirQualitySource
                                 ?: locations.activeLocation.airQualitySource,
                             uiState.selectedAlertSource ?: locations.activeLocation.alertSource,
@@ -293,7 +299,7 @@ fun EditLocationScreen(
                 countryCode = locations.activeLocation.countryCode,
                 show = uiState.isWeatherSourcesForLocationSheetOpen,
                 isEditing = true,
-                selectedSource = uiState.selectedWeatherSource ?: locations.activeLocation.source,
+                selectedSource = uiState.selectedWeatherSource ?: effectiveWeatherSource,
                 onSave = {
                     viewModel.updateSelectedWeatherSource(it)
                     if (it == Source.OPEN_METEO) {

@@ -171,7 +171,7 @@
     <string name="error_refresh_waiting_before_action">请等待刷新完成后再试</string>
     <string name="weather_total_amount">总量</string>
     <string name="setting_background_updates">后台更新</string>
-    <string name="setting_background_updates_secondary">更新间隔、电池优化与帮助</string>
+    <string name="setting_background_updates_secondary">电池优化与帮助</string>
     <string name="setting_notification_permission_req">需授予通知权限</string>
     <string name="setting_notification_permission_secondary">允许应用在后台完成天气数据更新后推送通知提醒。</string>
     <string name="setting_notification">通知</string>

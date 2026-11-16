@@ -16,9 +16,9 @@ object MainScreenDialogs {
             show,
             onDismiss = onDismiss,
             onConfirm = onConfirm,
-            confirmText = "Change",
-            title = "Source not supported",
-            message = "The currently selected source is not supported in your region. Please choose a different source"
+            confirmText = "去修改",
+            title = "当前数据源不支持",
+            message = "当前选择的数据源不支持你的所在地区，请换一个数据源"
         )
     }
 

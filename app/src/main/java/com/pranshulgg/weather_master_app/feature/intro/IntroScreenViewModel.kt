@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.pranshulgg.weather_master_app.core.model.domain.AppException
 import com.pranshulgg.weather_master_app.core.model.domain.toAppException
 import com.pranshulgg.weather_master_app.core.model.domain.toMessageRes
+import com.pranshulgg.weather_master_app.core.model.sources.Source
 import com.pranshulgg.weather_master_app.core.network.sources.address.nominatim.json.NominatimRepository
 import com.pranshulgg.weather_master_app.core.prefs.AppPrefs
 import com.pranshulgg.weather_master_app.core.ui.snackbar.SnackbarManager
@@ -53,12 +54,19 @@ class IntroScreenViewModel @Inject constructor(
                 }.getOrNull()
             }
 
+            // Inside China the global source is often unreachable, so the regional
+            // one becomes the default unless the user changes it later.
+            val isInChina = location.latitude != null && location.longitude != null &&
+                    chinaOfflineGeocoder.checkIsChina(location.latitude, location.longitude)
+            val defaultSource = if (isInChina) Source.CHINA else Source.OPEN_METEO
+
             if (address != null && address.city != null) {
                 locationsRepo.saveLocation(
                     location.toDomain(context).copy(
                         name = address.city,
                         country = address.country,
-                        countryCode = address.countryCode
+                        countryCode = address.countryCode,
+                        source = defaultSource
                     )
                 )
             } else {
@@ -78,9 +86,13 @@ class IntroScreenViewModel @Inject constructor(
 
                 locationsRepo.saveLocation(
                     if (offlineName != null) {
-                        domain.copy(name = offlineName, countryCode = "CN")
+                        domain.copy(
+                            name = offlineName,
+                            countryCode = "CN",
+                            source = defaultSource
+                        )
                     } else {
-                        domain
+                        domain.copy(source = defaultSource)
                     }
                 )
             }

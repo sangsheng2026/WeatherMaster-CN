@@ -31,6 +31,7 @@ import com.pranshulgg.weather_master_app.core.ui.components.NavigateUpBtn
 @Composable
 fun PrivacyPolicyScreen(navController: NavController) {
 
+    val repoUrl = "https://github.com/sangsheng2026/WeatherMaster-CN"
 
     LargeTopBarScaffold(
         title = stringResource(R.string.about_privacy_policy),
@@ -45,104 +46,107 @@ fun PrivacyPolicyScreen(navController: NavController) {
                 )
         ) {
             Text(
-                text = "WeatherMaster is an open-source application. \n\n" +
-                        "We respect your privacy. The application itself does not:",
+                text = "「WeatherMaster 大陆版」是开源软件，没有账号系统，也没有服务器保存你的数据。\n\n" +
+                        "这个 App 本身：",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Gap(6.dp)
             Text(
-                text = "- Collect, store, or share personal information \n" +
-                        "- Track your IP address, usage data, or device identifiers \n" +
-                        "- Send personal data to us directly",
+                text = "· 不收集、不存储、不分享你的个人信息\n" +
+                        "· 不追踪你的 IP、使用行为或设备标识\n" +
+                        "· 不向本项目维护者回传任何数据",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
             Text(
-                "Third-Party Services & APIs",
+                "第三方服务",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
             Gap(8.dp)
             Text(
-                text = "WeatherMaster relies on external weather and geolocation services to provide forecasts and location-based functionality. These third-party services may process certain technical information, such as:",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Gap(6.dp)
-            Text(
-                text = "- IP address \n" +
-                        "- Approximate/Precise location data \n" +
-                        "- Device or network-related information required for API requests \n\n" +
-                        "This data processing is handled by the respective service providers under their own privacy policies. WeatherMaster itself does not control or store this data.",
+                text = "获取天气、空气质量、预警和城市搜索时，App 会直接连接你选择的数据源" +
+                        "（例如中国天气网、Open-Meteo、geonames 等）。这些请求会带上你的坐标或搜索词，" +
+                        "因此对方可能看到你的 IP 地址和大致位置。这部分由各家服务商按自己的隐私政策处理，" +
+                        "本项目无法控制，也不保存这些数据。",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
             Text(
-                "Location Permission",
+                "位置权限",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
             Gap(8.dp)
             Text(
-                text = "- The app may request access to your device’s location in order to display local weather information \n" +
-                        "- Granting location permission is optional \n" +
-                        "- Your precise location is used locally within the app to fetch weather data from external APIs and is not stored by WeatherMaster",
+                text = "· 定位权限是可选的，拒绝授权也能手动搜索城市\n" +
+                        "· 坐标只在本机用来请求天气，不会被本项目保存到服务器\n" +
+                        "· 中国境内的城市名由内置的离线行政区划数据解析，这一步完全在本机完成、不联网",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
             Text(
-                "Children",
+                "本机保存的内容",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
             Gap(8.dp)
             Text(
-                text = "This application is not directed toward children under 13 and does not knowingly collect personal information.",
+                text = "你添加的位置、界面设置、天气预报的缓存都只存在手机本地数据库里。" +
+                        "卸载 App 即随之删除；你也可以在「备份与恢复」里导出或清除。",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
             Text(
-                "Changes",
+                "儿童",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
             Gap(8.dp)
             Text(
-                text = "This Privacy Policy may be updated from time to time. Continued use of the app after changes become effective means you accept the revised policy.",
+                text = "本 App 不面向 13 岁以下儿童，也不会主动收集儿童的个人信息。",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
             Text(
-                "Contact",
+                "变更",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Gap(8.dp)
+            Text(
+                text = "隐私政策可能随版本更新调整，改动会发布在项目仓库里。",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            HorizontalDivider(Modifier.padding(vertical = 12.dp))
+            Text(
+                "联系",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
             Gap(8.dp)
             Text(
                 text = buildAnnotatedString {
-                    append("If you have any questions about privacy, please contact ")
-                    withLink(
-                        LinkAnnotation.Url(
-                            "mailto:pranshul.devmain@gmail.com"
-                        )
-                    ) {
+                    append("关于隐私有疑问，请到 ")
+                    withLink(LinkAnnotation.Url(repoUrl)) {
                         withStyle(
                             style = SpanStyle(
                                 fontWeight = FontWeight.Bold,
                                 textDecoration = TextDecoration.Underline,
                                 color = MaterialTheme.colorScheme.tertiary
-                            ),
-
-                            ) {
-                            append("pranshul.devmain@gmail.com")
+                            )
+                        ) {
+                            append(repoUrl)
                         }
                     }
+                    append(" 提 issue。")
                 },
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface

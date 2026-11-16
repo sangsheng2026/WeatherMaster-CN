@@ -1,8 +1,5 @@
 package com.pranshulgg.weather_master_app.feature.settings
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,47 +7,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pranshulgg.weather_master_app.R
-import com.pranshulgg.weather_master_app.core.ui.components.BasicTimePicker
 import com.pranshulgg.weather_master_app.core.ui.components.BottomNavSpacing
-import com.pranshulgg.weather_master_app.core.ui.components.DialogBasic
 import com.pranshulgg.weather_master_app.core.ui.components.LargeTopBarScaffold
 import com.pranshulgg.weather_master_app.core.ui.components.NavigateUpBtn
 import com.pranshulgg.weather_master_app.core.ui.components.SettingSection
 import com.pranshulgg.weather_master_app.core.ui.components.SettingTile
 import com.pranshulgg.weather_master_app.core.ui.components.SettingsTileIcon
-import com.pranshulgg.weather_master_app.core.ui.components.WeatherIconBox
 import com.pranshulgg.weather_master_app.core.ui.navigation.NavRoutes
-import com.pranshulgg.weather_master_app.core.utils.formatters.getLocalizedPattern
 import com.pranshulgg.weather_master_app.core.utils.locale.getCurrentAppLocale
-import com.pranshulgg.weather_master_app.feature.notifications.NotificationConfig
-import com.pranshulgg.weather_master_app.feature.notifications.scheduled.NotificationScheduler
-import java.text.SimpleDateFormat
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController) {
 
     val uriHandler = LocalUriHandler.current
-
-    var isDonationDialogOpen by remember { mutableStateOf(false) }
 
     LargeTopBarScaffold(
         title = stringResource(R.string.settings),
@@ -75,10 +52,12 @@ fun SettingsScreen(navController: NavController) {
                         onClick = { navController.navigate(NavRoutes.APPEARANCE) }
                     ),
                     SettingTile.ActionTile(
-                        leading = { SettingsTileIcon(R.drawable.favorite_24px) },
-                        title = stringResource(R.string.settings_support),
-                        description = stringResource(R.string.settings_support_secondary),
-                        onClick = { isDonationDialogOpen = true }
+                        leading = { SettingsTileIcon(R.drawable.github_invertocat_black) },
+                        title = "项目仓库",
+                        description = "查看源码、下载新版、反馈问题",
+                        onClick = {
+                            uriHandler.openUri("https://github.com/sangsheng2026/WeatherMaster-CN")
+                        }
                     )
 
                 )
@@ -116,14 +95,6 @@ fun SettingsScreen(navController: NavController) {
             SettingSection(
                 tiles = listOf(
                     SettingTile.ActionTile(
-                        leading = { SettingsTileIcon(R.drawable.discord_symbol_black) },
-                        title = stringResource(R.string.setting_join_discord),
-                        onClick = {
-                            uriHandler.openUri("https://discord.gg/sSW2E4nqmn")
-                        }
-                    ),
-
-                    SettingTile.ActionTile(
                         leading = { SettingsTileIcon(R.drawable.cloud_download_24px) },
                         title = stringResource(R.string.setting_backup_restore),
                         description = stringResource(R.string.setting_backup_restore_secondary),
@@ -143,46 +114,4 @@ fun SettingsScreen(navController: NavController) {
             BottomNavSpacing(30.dp)
         }
     }
-
-
-    DialogBasic(
-        show = isDonationDialogOpen,
-        title = "Donate",
-        dismissText = stringResource(R.string.action_cancel),
-        showOnlyDismissAction = true,
-        onConfirm = {},
-        onDismiss = { isDonationDialogOpen = false },
-    ) {
-        Column(
-        ) {
-            DonateListItem(
-                "Ko-fi",
-                "Ko-fi.com/pranshulgg",
-                R.drawable.kofi_symbol
-            ) { uriHandler.openUri("https://ko-fi.com/pranshulgg") }
-            DonateListItem(
-                "Liberapay",
-                "liberapay.com/PranshulGG",
-                R.drawable.liberapay_logo,
-            ) { uriHandler.openUri("https://liberapay.com/PranshulGG") }
-            DonateListItem(
-                "Github sponsors",
-                "github.com/sponsors/PranshulGG",
-                R.drawable.gitub_logo_colored,
-            ) { uriHandler.openUri("https://github.com/sponsors/PranshulGG?frequency=one-time&sponsor=PranshulGG") }
-        }
-    }
-}
-
-@Composable
-private fun DonateListItem(headline: String, description: String, icon: Int, onClick: () -> Unit) {
-    ListItem(
-        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-        leadingContent = { WeatherIconBox(icon, size = 28.dp) },
-        content = { Text(headline) },
-        supportingContent = { Text(description) },
-        modifier = Modifier
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp)
-    )
 }

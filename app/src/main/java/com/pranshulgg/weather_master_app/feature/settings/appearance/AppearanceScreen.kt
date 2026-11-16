@@ -201,8 +201,8 @@ fun AppearanceScreen(navController: NavController) {
                     ),
                     SettingTile.SwitchTile(
                         leading = { SettingsTileIcon(R.drawable.tablet_24px) },
-                        title = "Tablet layout",
-                        description = "A separate layout for tablets or large-screen devices. Disabling this will use a single-column layout",
+                        title = "平板布局",
+                        description = "为大屏设备使用单独的布局，关闭后改为单列布局",
                         checked = prefs.isTabletLayoutEnabled,
                         onCheckedChange = { checked ->
                             prefs.setTabletLayout(checked)

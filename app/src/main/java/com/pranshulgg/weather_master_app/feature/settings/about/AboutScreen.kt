@@ -79,7 +79,7 @@ fun AboutScreen(navController: NavController) {
                     .padding(paddingValues)
         ) {
             AppVersionTile(
-                description = "v${packageInfo.versionName} 鈥?${packageInfo.versionCode}",
+                description = "v${packageInfo.versionName} · Build ${packageInfo.versionCode}",
                 isLoadingNewVersion = isLoadingNewVersion,
                 onClick = {
                     scope.launch {
@@ -107,6 +107,12 @@ fun AboutScreen(navController: NavController) {
                         title = stringResource(R.string.about_license),
                         description = "GNU General Public License v3.0",
                         onClick = { navController.navigate(NavRoutes.LICENSE) }
+                    ),
+                    SettingTile.ActionTile(
+                        leading = { SettingsTileIcon(R.drawable.github_invertocat_black) },
+                        title = "项目仓库",
+                        description = "sangsheng2026/WeatherMaster-CN",
+                        onClick = { uriHandler.openUri("https://github.com/sangsheng2026/WeatherMaster-CN") }
                     ),
                     SettingTile.ActionTile(
                         leading = { SettingsTileIcon(R.drawable.bug_report_24px) },
@@ -159,7 +165,7 @@ private fun AppVersionTile(
             ),
             content = {
                 Text(
-                    "WeatherMaster",
+                    "WeatherMaster 大陆版",
                     color = MaterialTheme.colorScheme.onTertiaryContainer,
                     style = MaterialTheme.typography.bodyLarge
                 )

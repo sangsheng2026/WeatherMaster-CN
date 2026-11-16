@@ -10,10 +10,10 @@ import com.pranshulgg.weather_master_app.core.ui.theme.ThemeVariantType
 import com.pranshulgg.weather_master_app.core.prefs.helper.PreferencesHelper
 
 object AppPrefs {
-    private val _appTheme = mutableStateOf("Dark")
+    private val _appTheme = mutableStateOf("System")
     private val _customThemeColor = mutableStateOf("#2196f3")
     private val _isCustomTheme = mutableStateOf(false)
-    private val _isDynamicTheme = mutableStateOf(false)
+    private val _isDynamicTheme = mutableStateOf(true)
     private val _isAmoledTheme = mutableStateOf(false)
 
     private val _themeVariantType = mutableStateOf(ThemeVariantType.EXPRESSIVE)
@@ -24,7 +24,7 @@ object AppPrefs {
 
     private val _backgroundUpdatesInterval = mutableIntStateOf(60)
 
-    private val _isFroggyLayout = mutableStateOf(true)
+    private val _isFroggyLayout = mutableStateOf(false)
     private val _isShowWeatherAnimations = mutableStateOf(true)
     private val _isWeatherBasedTheme = mutableStateOf(true)
 
@@ -50,10 +50,10 @@ object AppPrefs {
         PreferencesHelper.init(context)
 
         _appTheme.value =
-            PreferencesHelper.getString("app_theme") ?: "Dark"
+            PreferencesHelper.getString("app_theme") ?: "System"
         _customThemeColor.value = PreferencesHelper.getString("custom_theme_color") ?: "#2196f3"
         _isCustomTheme.value = PreferencesHelper.getBool("isCustomTheme") ?: false
-        _isDynamicTheme.value = PreferencesHelper.getBool("isDynamicTheme") ?: false
+        _isDynamicTheme.value = PreferencesHelper.getBool("isDynamicTheme") ?: true
         _isAmoledTheme.value = PreferencesHelper.getBool("isAmoledTheme") ?: false
 
         _themeVariantType.value = PreferencesHelper.getString("theme_variant_type")
@@ -72,7 +72,7 @@ object AppPrefs {
         _backgroundUpdatesInterval.intValue =
             PreferencesHelper.getInt("backgroundUpdatesInterval") ?: 60
 
-        _isFroggyLayout.value = PreferencesHelper.getBool("isFroggyLayout") ?: true
+        _isFroggyLayout.value = PreferencesHelper.getBool("isFroggyLayout") ?: false
         _isShowWeatherAnimations.value =
             PreferencesHelper.getBool("isShowWeatherAnimations") ?: true
         _isWeatherBasedTheme.value = PreferencesHelper.getBool("isWeatherBasedTheme") ?: true

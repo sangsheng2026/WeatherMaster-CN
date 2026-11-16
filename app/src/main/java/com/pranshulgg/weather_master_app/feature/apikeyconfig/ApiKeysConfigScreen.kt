@@ -44,7 +44,7 @@ fun ApiKeysConfigScreen(navController: NavController) {
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "Only sources that require an API key will be shown here. Add and save your key to use the sources",
+                text = "这里只显示需要 API key 的数据源。填好 key 并保存后即可使用这些数据源",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
