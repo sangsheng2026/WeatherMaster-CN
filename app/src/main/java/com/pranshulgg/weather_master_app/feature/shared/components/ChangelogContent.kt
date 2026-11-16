@@ -41,8 +41,13 @@ fun ChangelogContent(hideSheet: () -> Unit) {
         ) {
             Gap(5.dp)
             ChangelogBox {
-                ChangelogHeader("本版（3.11.0-cn4）")
-                ChangelogText("新增「预测性返回手势」开关：外观 → 布局里可以关掉边滑返回的预览动画")
+                ChangelogHeader("本版（3.11.0-cn5）")
+                ChangelogText("预测性返回：试过在运行时关掉，但系统的返回预览不受 App 控制，那个开关是无效的，已删除")
+                ChangelogText("改为在 manifest 里直接关闭预测性返回，回到传统返回。侧滑不再是「页面缩成卡片预览」的效果")
+                ChangelogText("页面的进入/返回转场保留上一版的短距离滑动 + 淡入淡出")
+            }
+            ChangelogBox {
+                ChangelogHeader("3.11.0-cn4")
                 ChangelogText("调整页面进入/返回的转场：改为短距离滑动配合淡入淡出，不再是从头到尾的慢淡出")
             }
             ChangelogBox {

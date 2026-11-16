@@ -152,3 +152,24 @@ WeatherManager.invoke()
 | `app/build.gradle.kts` | `versionName = 3.11.0-cn4`、`versionCode = 71` | |
 
 **实现说明**：`android:enableOnBackInvokedCallback` 是 manifest 静态属性，运行时无法直接改，所以这里走的是 AndroidX `OnBackPressedDispatcher` 与窗口 dispatcher 的绑定关系——该 setter 在平台类上是 public、被 AndroidX 标了 `@RestrictTo`，因此用反射调用并 `runCatching` 兜底：万一将来版本移除该方法，开关退化为无操作，不会崩溃。Android 13 以下（API < 33）本身没有预测性返回，开关不产生行为。
+
+> **⚠ 2026-11-16 晚更正：这套方案是无效的，cn5 已删除。**
+>
+> 实测（用户反馈 + 复看录屏）：解绑 `OnBackPressedDispatcher` 只让页面内容不再接收返回动画回调，**系统的返回预览（窗口缩小成圆角卡片、露出下层）依然照常播放**——那部分由系统在「App 声明支持 predictive back」时自行渲染，不走 App 的 callback。所以开关按下去只有"页面不跟手"的副作用，用户看到的预览一点没少。
+>
+> 结论：**运行时关不掉预测性返回，唯一可靠的方式是 manifest 的 `android:enableOnBackInvokedCallback="false"`**（静态、全局、需要重装/升级才生效）。cn5 就是这么做的：删掉开关与 `PredictiveBackController`，改为关闭该属性。
+
+---
+
+## 十一、3.11.0-cn5 增量修改（2026-11-16 晚）
+
+| 文件 | 改动 |
+|---|---|
+| `app/src/main/AndroidManifest.xml` | `<application>` 加 `android:enableOnBackInvokedCallback="false"` —— 真正关闭预测性返回 |
+| `core/ui/navigation/PredictiveBackController.kt` | **删除**（运行时方案无效） |
+| `MainActivity.kt` | 删除 `attach` / `setEnabled` 调用与 import |
+| `core/prefs/AppPrefs.kt`、`AppPrefsState.kt` | 删除 `isPredictiveBackEnabled` 字段、初始化与 setter |
+| `feature/settings/appearance/AppearanceScreen.kt` | 删除「预测性返回手势」开关，`activity` 类型改回 `Activity` |
+| `app/build.gradle.kts` | `versionName = 3.11.0-cn5`、`versionCode = 72` |
+
+`NavTransitions.kt` 的转场调整（短距离 slide + fade）保留，它与预测性返回无关，是独立的观感改进。

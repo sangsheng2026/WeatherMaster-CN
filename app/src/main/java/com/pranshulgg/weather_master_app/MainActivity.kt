@@ -19,7 +19,6 @@ import androidx.work.WorkManager
 import com.pranshulgg.weather_master_app.core.prefs.AppPrefs
 import com.pranshulgg.weather_master_app.core.prefs.AppPrefs.initPrefs
 import com.pranshulgg.weather_master_app.core.prefs.helper.PreferencesHelper
-import com.pranshulgg.weather_master_app.core.ui.navigation.PredictiveBackController
 import com.pranshulgg.weather_master_app.core.ui.theme.isThemeDark
 import com.pranshulgg.weather_master_app.data.provider.devicelocation.GetDeviceLocation
 import com.pranshulgg.weather_master_app.data.store.InitializationStoreState
@@ -47,12 +46,6 @@ class MainActivity : AppCompatActivity() {
         }
         initPrefs(this)
         super.onCreate(savedInstanceState)
-
-        PredictiveBackController.attach(this)
-        PredictiveBackController.setEnabled(
-            this,
-            PreferencesHelper.getBool("isPredictiveBackEnabled") ?: true
-        )
 
         val theme = PreferencesHelper.getString("app_theme") ?: "Dark"
 
