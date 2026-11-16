@@ -16,8 +16,10 @@ local.properties
 /weathermaster.jks
 /.idea
 gradle.properties
-# 本地签名文件（私钥，绝不提交）
 keystore/
 *.jks
 *.keystore
 
+# build output goes to Releases only, not into the repo
+/WeatherMaster-CN-*.apk
+/app/build/outputs/
