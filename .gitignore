@@ -23,3 +23,6 @@ keystore/
 # build output goes to Releases only, not into the repo
 /WeatherMaster-CN-*.apk
 /app/build/outputs/
+
+# local-only build artifacts (APKs kept on this machine, published via GitHub Releases)
+/releases/
