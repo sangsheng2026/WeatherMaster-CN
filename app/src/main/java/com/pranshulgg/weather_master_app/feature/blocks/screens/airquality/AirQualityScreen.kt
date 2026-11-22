@@ -38,6 +38,7 @@ import com.pranshulgg.weather_master_app.core.utils.formatters.getCurrentTimeFor
 import com.pranshulgg.weather_master_app.core.utils.formatters.toDateString
 import com.pranshulgg.weather_master_app.core.utils.weather.airquality.AirQualityColors
 import com.pranshulgg.weather_master_app.feature.blocks.BlocksScreenViewModel
+import com.pranshulgg.weather_master_app.feature.blocks.components.CurrentValueCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.NoHourlyDataAvailable
 import com.pranshulgg.weather_master_app.feature.blocks.screens.airquality.components.AirQualityHourlyCard
 
@@ -63,7 +64,13 @@ fun AirQualityScreen(navController: NavController, index: Int = 0, locationId: S
         time,
         weather.location.source,
 
-        ).filter { it.ozone != null || it.pm25 != null || it.pm10 != null || it.sulphurDioxide != null || it.carbonMonoxide != null || it.nitrogenDioxide != null }
+        )// Keep the hour when the source publishes an index directly (China) or
+            // when any pollutant concentration is present.
+            .filter {
+                it.aqi != null || it.ozone != null || it.pm25 != null || it.pm10 != null ||
+                        it.sulphurDioxide != null || it.carbonMonoxide != null ||
+                        it.nitrogenDioxide != null
+            }
 
     LargeTopBarScaffold(
         title = stringResource(R.string.weather_air_quality),
@@ -109,7 +116,17 @@ fun AirQualityScreen(navController: NavController, index: Int = 0, locationId: S
             if (data.isNotEmpty()) {
                 AirQualityHourlyCard(data, weather.location.timezone, airQuality)
             } else {
-                NoHourlyDataAvailable()
+                val currentAqi = runCatching { airQuality.getAqi() }.getOrNull()
+                if (currentAqi != null && currentAqi > 0) {
+                    CurrentValueCard(
+                        iconRes = R.drawable.airwave_24px,
+                        title = stringResource(R.string.weather_air_quality),
+                        value = "$currentAqi",
+                        unit = airQuality.getAqiLevel(currentAqi).toName(context)
+                    )
+                } else {
+                    NoHourlyDataAvailable()
+                }
             }
 
             Gap(WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() + 30.dp)

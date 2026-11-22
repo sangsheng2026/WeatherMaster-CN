@@ -31,6 +31,9 @@ data class HourlyAirQualityEntity(
     val nitrogenDioxide: Double?,
     val sulphurDioxide: Double?,
     val ozone: Double?,
-    val time: Long
+    val time: Long,
+
+    /** Index published by the source for this hour (China / China Weather). */
+    val aqi: Int? = null
 )
 

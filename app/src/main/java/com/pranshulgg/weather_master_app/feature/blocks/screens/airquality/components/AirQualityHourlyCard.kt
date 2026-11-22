@@ -52,14 +52,7 @@ fun AirQualityHourlyCard(data: List<AirQualityHourly>, zoneId: String, airQualit
     }
 
     val aqiList = data.map {
-        airQuality.getAqiFromValues(
-            it.carbonMonoxide,
-            it.pm25,
-            it.nitrogenDioxide,
-            it.ozone,
-            it.pm10,
-            it.sulphurDioxide
-        )
+        airQuality.getAqiForHourly(it)
     }
 
     val sharedScrollState = rememberScrollState()
@@ -91,14 +84,7 @@ fun AirQualityHourlyCard(data: List<AirQualityHourly>, zoneId: String, airQualit
                 data.forEachIndexed { index, hourly ->
 
 
-                    val aqi = airQuality.getAqiFromValues(
-                        hourly.carbonMonoxide,
-                        hourly.pm25,
-                        hourly.nitrogenDioxide,
-                        hourly.ozone,
-                        hourly.pm10,
-                        hourly.sulphurDioxide
-                    )
+                    val aqi = airQuality.getAqiForHourly(hourly)
 
                     val percentage = ((aqi.toDouble().minus(min)).div((max - min))).times(
                         100
@@ -151,12 +137,26 @@ fun AirQualityHourlyCard(data: List<AirQualityHourly>, zoneId: String, airQualit
                 }
             }
 
-            PollutantHourlyCard(data, zoneId, Pollutant.PM25, sharedScrollState)
-            PollutantHourlyCard(data, zoneId, Pollutant.PM10, sharedScrollState)
-            PollutantHourlyCard(data, zoneId, Pollutant.O3, sharedScrollState)
-            PollutantHourlyCard(data, zoneId, Pollutant.NO2, sharedScrollState)
-            PollutantHourlyCard(data, zoneId, Pollutant.CO, sharedScrollState)
-            PollutantHourlyCard(data, zoneId, Pollutant.SO2, sharedScrollState)
+            // Pollutant cards are only drawn when that pollutant actually has per-hour
+            // values: some sources (e.g. China) publish the index only.
+            if (data.any { it.pm25 != null }) {
+                PollutantHourlyCard(data, zoneId, Pollutant.PM25, sharedScrollState)
+            }
+            if (data.any { it.pm10 != null }) {
+                PollutantHourlyCard(data, zoneId, Pollutant.PM10, sharedScrollState)
+            }
+            if (data.any { it.ozone != null }) {
+                PollutantHourlyCard(data, zoneId, Pollutant.O3, sharedScrollState)
+            }
+            if (data.any { it.nitrogenDioxide != null }) {
+                PollutantHourlyCard(data, zoneId, Pollutant.NO2, sharedScrollState)
+            }
+            if (data.any { it.carbonMonoxide != null }) {
+                PollutantHourlyCard(data, zoneId, Pollutant.CO, sharedScrollState)
+            }
+            if (data.any { it.sulphurDioxide != null }) {
+                PollutantHourlyCard(data, zoneId, Pollutant.SO2, sharedScrollState)
+            }
 
         }
     }

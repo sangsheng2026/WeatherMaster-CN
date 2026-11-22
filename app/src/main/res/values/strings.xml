@@ -45,6 +45,7 @@
     <string name="time_just_now">Just now</string>
     <string name="time_last_updated">Last updated %1$s</string>
     <string name="weather_no_data">No weather data available</string>
+    <string name="current_value_no_hourly">Current reading · this data source has no hourly trend</string>
     <string name="weather_clear_sky">Clear sky</string>
     <string name="weather_overcast">Overcast</string>
     <string name="weather_partly_cloudy">Partly cloudy</string>
@@ -112,6 +113,9 @@
     <string name="setting_app_looks">App looks</string>
 
     <string name="temp_feels_like">Feels like %1$s</string>
+    <string name="temp_actual">Air temp %1$s</string>
+    <string name="setting_feels_like_as_main">Show felt temperature</string>
+    <string name="setting_feels_like_as_main_secondary">Use the felt temperature as the big number, with the air temperature beside it</string>
 
     <string name="temp_max">Max: %1$s</string>
     <string name="temp_min">Min: %1$s</string>
@@ -564,6 +568,32 @@
     <string name="notifications_setting_alert_notifications">Alert notifications</string>
     <string name="notifications_setting_alert_notifications_secondary">Show notifications for weather warnings when available</string>
 
+
+    <!-- cn6 localisation -->
+    <string name="intro_title">Let\'s Get Your Forecast</string>
+    <string name="intro_location_permission">Allow location access to see your local forecast</string>
+    <string name="action_enable_location">Enable Location</string>
+    <string name="action_loading">Loading...</string>
+    <string name="action_search_city">Search for a City</string>
+    <string name="action_import_backup">Import a backup</string>
+    <string name="action_importing">Importing...</string>
+    <string name="pollutant_pm25_desc">Fine particulate matter (below 2.5 microns)</string>
+    <string name="pollutant_pm10_desc">Coarse particulate matter (below 10 microns)</string>
+    <string name="pollutant_co_desc">Carbon monoxide</string>
+    <string name="pollutant_no2_desc">Nitrogen dioxide</string>
+    <string name="pollutant_so2_desc">Sulfur dioxide</string>
+    <string name="pollutant_o3_desc">Ground-level ozone</string>
+    <string name="dew_point_scale_dry">Dry and comfortable</string>
+    <string name="alert_unknown">Unknown</string>
+    <string name="hint_name">Name</string>
+    <string name="requires_api_key">Requires API key</string>
+    <string name="license_your_rights">Your Rights</string>
+    <string name="license_conditions">Conditions</string>
+    <string name="license_full_license">Full License</string>
+    <string name="license_full_license_link">You can read the full GNU GPLv3 license at:</string>
+    <string name="theme_light">Light</string>
+    <string name="active_alerts">Active alerts</string>
+    <string name="hint_api_key">API key</string>
 </resources>
 
     <!--<string name=""></string>-->

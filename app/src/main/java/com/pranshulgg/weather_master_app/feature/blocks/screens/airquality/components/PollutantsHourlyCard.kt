@@ -21,8 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.pranshulgg.weather_master_app.R
 import com.pranshulgg.weather_master_app.core.model.domain.airquality.AirQualityHourly
 import com.pranshulgg.weather_master_app.core.model.weather.airquality.Pollutant
 import com.pranshulgg.weather_master_app.core.prefs.LocalAppPrefs
@@ -46,7 +48,7 @@ fun PollutantHourlyCard(
 ) {
 
 
-    val pollutantList = data.map {
+    val pollutantList = data.mapNotNull {
 
         val value = when (pollutant) {
             Pollutant.PM25 -> it.pm25
@@ -57,11 +59,15 @@ fun PollutantHourlyCard(
             Pollutant.O3 -> it.ozone
         }
 
-        Pollutant.getLevelIndex(
-            value!!,
-            pollutant.thresholds
-        )
+        value?.let { v ->
+            Pollutant.getLevelIndex(
+                v,
+                pollutant.thresholds
+            )
+        }
     }
+
+    if (pollutantList.isEmpty()) return
 
     val headerText = when (pollutant) {
         Pollutant.PM25 -> "PM2.5 (μg/m³)"
@@ -73,12 +79,12 @@ fun PollutantHourlyCard(
     }
 
     val headerSecondaryText = when (pollutant) {
-        Pollutant.PM25 -> "Particulate matter less than 2.5 microns"
-        Pollutant.PM10 -> "Particulate matter less than 10 microns"
-        Pollutant.CO -> "Carbon monoxide"
-        Pollutant.NO2 -> "Nitrogen Dioxide"
-        Pollutant.SO2 -> "Sulfur Dioxide"
-        Pollutant.O3 -> "Ground surface"
+        Pollutant.PM25 -> stringResource(R.string.pollutant_pm25_desc)
+        Pollutant.PM10 -> stringResource(R.string.pollutant_pm10_desc)
+        Pollutant.CO -> stringResource(R.string.pollutant_co_desc)
+        Pollutant.NO2 -> stringResource(R.string.pollutant_no2_desc)
+        Pollutant.SO2 -> stringResource(R.string.pollutant_so2_desc)
+        Pollutant.O3 -> stringResource(R.string.pollutant_o3_desc)
     }
 
     val max = pollutantList.max().toDouble()
@@ -113,9 +119,9 @@ fun PollutantHourlyCard(
                     Pollutant.NO2 -> hourly.nitrogenDioxide
                     Pollutant.SO2 -> hourly.sulphurDioxide
                     Pollutant.O3 -> hourly.ozone
-                }
+                } ?: return@forEachIndexed
                 val indexPollutant = Pollutant.getLevelIndex(
-                    if (pollutant == Pollutant.CO) (value!! / 1000) else value!!,
+                    if (pollutant == Pollutant.CO) (value / 1000) else value,
                     pollutant.thresholds
                 )
 

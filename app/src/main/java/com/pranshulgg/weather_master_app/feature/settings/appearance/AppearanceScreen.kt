@@ -158,6 +158,16 @@ fun AppearanceScreen(navController: NavController) {
                     ),
 
                     SettingTile.SwitchTile(
+                        leading = { SettingsTileIcon(R.drawable.device_thermostat_24px) },
+                        title = stringResource(R.string.setting_feels_like_as_main),
+                        description = stringResource(R.string.setting_feels_like_as_main_secondary),
+                        checked = prefs.isFeelsLikeAsMain,
+                        onCheckedChange = { checked ->
+                            prefs.setFeelsLikeAsMain(checked)
+                        }
+                    ),
+
+                    SettingTile.SwitchTile(
                         leading = { SettingsTileIcon(R.drawable.animation_24px) },
                         title = stringResource(R.string.setting_weather_animations),
                         description = stringResource(R.string.setting_weather_animations_secondary),

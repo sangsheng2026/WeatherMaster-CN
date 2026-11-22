@@ -67,7 +67,11 @@ data class AppPrefsState(
     val setDateFormat: (String) -> Unit,
 
     val isNewVersionMessageEnabled: Boolean,
-    val setNewVersionMessageEnabled: (Boolean) -> Unit
+    val setNewVersionMessageEnabled: (Boolean) -> Unit,
+
+    /** Show the felt temperature as the big number on the home screen. */
+    val isFeelsLikeAsMain: Boolean,
+    val setFeelsLikeAsMain: (Boolean) -> Unit
 )
 
 

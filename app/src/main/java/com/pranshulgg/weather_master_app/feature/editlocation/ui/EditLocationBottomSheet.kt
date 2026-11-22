@@ -65,7 +65,7 @@ object EditLocationBottomSheet {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    placeholder = { Text("Name") },
+                    placeholder = { Text(stringResource(R.string.hint_name)) },
                 )
             }
         }
@@ -113,10 +113,11 @@ object EditLocationBottomSheet {
                 }
             }
 
+            val requiresApiKeyText = stringResource(R.string.requires_api_key)
             val description: (Source) -> String? = {
                 if (it.requiresUserApiKey &&
                     !isApiKeyAvailable(it)
-                ) "Requires API key" else null
+                ) requiresApiKeyText else null
             }
 
 
@@ -259,10 +260,11 @@ object EditLocationBottomSheet {
                 }
             }
 
+            val requiresApiKeyText = stringResource(R.string.requires_api_key)
             val description: (Source) -> String? = {
                 if (it.requiresUserApiKey &&
                     !isApiKeyAvailable(it)
-                ) "Requires API key" else null
+                ) requiresApiKeyText else null
             }
 
 

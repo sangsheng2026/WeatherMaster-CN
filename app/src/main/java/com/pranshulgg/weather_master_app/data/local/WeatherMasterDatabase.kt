@@ -39,6 +39,23 @@ import com.pranshulgg.weather_master_app.data.local.entity.weather.units.AppWeat
 )
 class WeatherCurrentDeleteTimeSpec : AutoMigrationSpec
 
+/**
+ * cn6: the China source now also serves air quality and alerts, so existing
+ * locations that use it are switched over from Open-Meteo / None once.
+ */
+class ChinaSourceDefaultsSpec : AutoMigrationSpec {
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "UPDATE weather_locations SET airQualitySource = 'CHINA' " +
+                    "WHERE source = 'CHINA' AND airQualitySource = 'OPEN_METEO'"
+        )
+        db.execSQL(
+            "UPDATE weather_locations SET alertSource = 'CHINA' " +
+                    "WHERE source = 'CHINA' AND alertSource = 'NONE'"
+        )
+    }
+}
+
 @Database(
     entities = [
         WeatherLocationEntity::class,
@@ -55,7 +72,7 @@ class WeatherCurrentDeleteTimeSpec : AutoMigrationSpec
         AlertEntity::class,
         ApiKeyEntity::class
     ],
-    version = 60,
+    version = 61,
     autoMigrations = [
         AutoMigration(from = 39, to = 40),
         AutoMigration(from = 42, to = 43),
@@ -71,7 +88,8 @@ class WeatherCurrentDeleteTimeSpec : AutoMigrationSpec
         AutoMigration(from = 56, to = 57),
         AutoMigration(from = 57, to = 58),
         AutoMigration(from = 58, to = 59),
-        AutoMigration(from = 59, to = 60, spec = WeatherCurrentDeleteTimeSpec::class)
+        AutoMigration(from = 59, to = 60, spec = WeatherCurrentDeleteTimeSpec::class),
+        AutoMigration(from = 60, to = 61, spec = ChinaSourceDefaultsSpec::class)
     ],
 )
 

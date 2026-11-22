@@ -20,7 +20,8 @@ fun AirQualityWithRelations?.toDomain(): AirQuality? {
             nitrogenDioxide = this.current?.nitrogenDioxide,
             sulphurDioxide = this.current?.sulphurDioxide,
             ozone = this.current?.ozone,
-            lastUpdatedInMilli = this.current?.lastUpdatedInMilli ?: System.currentTimeMillis()
+            lastUpdatedInMilli = this.current?.lastUpdatedInMilli ?: System.currentTimeMillis(),
+            reportedAqi = this.current?.reportedAqi
         ),
         hourly = List(hourly.size) {
             AirQualityHourly(
@@ -28,9 +29,10 @@ fun AirQualityWithRelations?.toDomain(): AirQuality? {
                 pm10 = hourly[it].pm10,
                 pm25 = hourly[it].pm25,
                 carbonMonoxide = hourly[it].carbonMonoxide,
-                nitrogenDioxide = hourly[it].carbonMonoxide,
+                nitrogenDioxide = hourly[it].nitrogenDioxide,
                 sulphurDioxide = hourly[it].sulphurDioxide,
-                ozone = hourly[it].ozone
+                ozone = hourly[it].ozone,
+                aqi = hourly[it].aqi
             )
         }
     )

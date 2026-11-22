@@ -71,8 +71,8 @@ fun ApiKeysConfigScreen(navController: NavController) {
                             viewModel.saveKey(key.trim(), it)
                         },
                         placeholder = apiKeys[it]?.getOrNull(0)?.apiKey.takeIf { key -> !key.isNullOrBlank() }
-                            ?: "API key",
-                        placeholderTextField = "API key",
+                            ?: stringResource(R.string.hint_api_key),
+                        placeholderTextField = stringResource(R.string.hint_api_key),
                         initialText = apiKeys[it]?.getOrNull(0)?.apiKey ?: "",
                         placeholderAsValue = true,
                         textFieldDescription = it.apiKeyNote

@@ -8,6 +8,7 @@ import com.pranshulgg.weather_master_app.core.network.sources.weather.aemet.Aeme
 import com.pranshulgg.weather_master_app.core.network.sources.weather.bmkg.BmkgApi
 import com.pranshulgg.weather_master_app.core.network.sources.weather.bmkg.BmkgRepository
 import com.pranshulgg.weather_master_app.core.network.sources.weather.china.ChinaApi
+import com.pranshulgg.weather_master_app.core.network.sources.weather.china.ChinaHourlySupplementApi
 import com.pranshulgg.weather_master_app.core.network.sources.weather.china.ChinaRepository
 import com.pranshulgg.weather_master_app.core.network.sources.weather.cwa.CwaApi
 import com.pranshulgg.weather_master_app.core.network.sources.weather.cwa.CwaRepository
@@ -144,8 +145,18 @@ object WeatherRepositoryModule {
     fun provideChinaRepository(
         dao: WeatherContextDao,
         api: ChinaApi,
+        supplementApi: ChinaHourlySupplementApi,
+        airQualityDao: AirQualityDao,
+        alertsDao: AlertsDao,
         weatherDao: WeatherDao
-    ): ChinaRepository = ChinaRepository(dao, weatherDao, api)
+    ): ChinaRepository = ChinaRepository(
+        dao = dao,
+        weatherDao = weatherDao,
+        airQualityDao = airQualityDao,
+        alertsDao = alertsDao,
+        api = api,
+        supplementApi = supplementApi
+    )
 
     @Provides
     @Singleton

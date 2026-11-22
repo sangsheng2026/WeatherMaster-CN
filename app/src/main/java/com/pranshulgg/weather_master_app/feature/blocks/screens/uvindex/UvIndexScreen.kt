@@ -42,6 +42,7 @@ import com.pranshulgg.weather_master_app.core.utils.weather.forecast.findMatchin
 import com.pranshulgg.weather_master_app.feature.blocks.BlocksScreenViewModel
 import com.pranshulgg.weather_master_app.feature.blocks.components.AboutCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.AboutCardText
+import com.pranshulgg.weather_master_app.feature.blocks.components.CurrentValueCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.MatBarChart
 import com.pranshulgg.weather_master_app.feature.blocks.components.NoHourlyDataAvailable
 import com.pranshulgg.weather_master_app.feature.blocks.components.ScaleCard
@@ -101,6 +102,12 @@ fun UvIndexScreen(navController: NavController, index: Int = 0, locationId: Stri
         ) {
             if (uvIndexData.isNotEmpty() && !uvIndexData.contains(null)) {
                 UvIndexHourlyCard(data, zoneId)
+            } else if (weather.current.uvIndex != null) {
+                CurrentValueCard(
+                    iconRes = R.drawable.wb_sunny_24px,
+                    title = stringResource(R.string.weather_uv_index),
+                    value = "${weather.current.uvIndex.roundToInt()}"
+                )
             } else {
                 NoHourlyDataAvailable()
             }

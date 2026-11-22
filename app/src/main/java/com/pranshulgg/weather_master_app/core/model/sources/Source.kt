@@ -70,7 +70,7 @@ enum class Source(
         displayName = "China",
         fullName = "China National Environmental Monitoring Centre",
         displayLink = "https://www.cnemc.cn/",
-        capabilities = setOf(Capability.WEATHER)
+        capabilities = setOf(Capability.WEATHER, Capability.ALERTS, Capability.AIR_QUALITY)
     ),
     BMKG(
         displayName = "BMKG",

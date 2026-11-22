@@ -91,10 +91,11 @@ object SharedBottomSheet {
 //                }
 //            }
 
+            val requiresApiKeyText = stringResource(R.string.requires_api_key)
             val description: (Source) -> String? = {
                 if (it.requiresUserApiKey &&
                     !isApiKeyAvailable(it)
-                ) "Requires API key" else null
+                ) requiresApiKeyText else null
             }
 
             val handeSelection: (Source) -> Boolean = { source ->

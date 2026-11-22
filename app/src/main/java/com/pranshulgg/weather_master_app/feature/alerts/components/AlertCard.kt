@@ -38,13 +38,15 @@ fun AlertCard(alert: Alert, prefs: AppPrefsState, zoneId: String, shape: Shape) 
         if (prefs.is24HrTimeFormat) "MMMddHmm" else "MMMddhmma"
     )
 
+    val unknownText = stringResource(R.string.alert_unknown)
+
     val formatter: (Long?) -> String? = {
         it?.let {
             val formatter = DateTimeFormatter.ofPattern(pattern)
             val instant = Instant.ofEpochMilli(it)
             val dateTime = instant.atZone(safeZoneId(zoneId)).toLocalDateTime()
             formatter.format(dateTime)
-        } ?: "Unknown"
+        } ?: unknownText
     }
 
     Surface(

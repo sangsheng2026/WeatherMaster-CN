@@ -89,10 +89,22 @@ class SearchScreenViewModel @Inject constructor(
                         .firstOrNull { Capability.ALERTS in it.capabilities }
                         ?: resolved.alertSource
                 }
+                // Keep air quality on the same source when it can provide it
+                // (e.g. China serves the official CNEMC index), instead of
+                // silently falling back to a global API.
+                val airQualitySource =
+                    if (Capability.AIR_QUALITY in weatherSource.capabilities) {
+                        weatherSource
+                    } else {
+                        getSourcesForCountry(resolved.countryCode?.uppercase())
+                            .firstOrNull { Capability.AIR_QUALITY in it.capabilities }
+                            ?: resolved.airQualitySource
+                    }
                 weatherContextRepository.saveLocation(
                     resolved.copy(
                         source = weatherSource,
-                        alertSource = alertSource
+                        alertSource = alertSource,
+                        airQualitySource = airQualitySource
                     )
                 )
                 onBack()

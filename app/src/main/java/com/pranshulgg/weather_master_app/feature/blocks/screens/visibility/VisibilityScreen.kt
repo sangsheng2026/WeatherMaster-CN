@@ -30,14 +30,17 @@ import com.pranshulgg.weather_master_app.core.prefs.LocalAppPrefs
 import com.pranshulgg.weather_master_app.core.ui.components.Gap
 import com.pranshulgg.weather_master_app.core.ui.components.LargeTopBarScaffold
 import com.pranshulgg.weather_master_app.core.ui.components.NavigateUpBtn
+import com.pranshulgg.weather_master_app.core.utils.formatters.formatLocalizedNumber
 import com.pranshulgg.weather_master_app.core.utils.formatters.getCurrentTimeFor
 import com.pranshulgg.weather_master_app.core.utils.formatters.to12HourTimeString
 import com.pranshulgg.weather_master_app.core.utils.formatters.to24HourTimeString
 import com.pranshulgg.weather_master_app.core.utils.formatters.toDateString
+import com.pranshulgg.weather_master_app.core.utils.locale.getCurrentAppLocale
 import com.pranshulgg.weather_master_app.core.utils.weather.forecast.findMatchingHourly
 import com.pranshulgg.weather_master_app.feature.blocks.BlocksScreenViewModel
 import com.pranshulgg.weather_master_app.feature.blocks.components.AboutCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.AboutCardText
+import com.pranshulgg.weather_master_app.feature.blocks.components.CurrentValueCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.MatBarChart
 import com.pranshulgg.weather_master_app.feature.blocks.components.NoHourlyDataAvailable
 import com.pranshulgg.weather_master_app.feature.blocks.components.ScaleCard
@@ -113,6 +116,20 @@ fun VisibilityScreen(navController: NavController, index: Int = 0, locationId: S
         ) {
             if (visibility.isNotEmpty() && !visibility.contains(null)) {
                 VisibilityHourlyCard(data, zoneId, units.distanceUnit, context)
+            } else if (weather.current.visibility != null) {
+                CurrentValueCard(
+                    iconRes = R.drawable.visibility_24px,
+                    title = stringResource(R.string.weather_visibility),
+                    value = formatLocalizedNumber(
+                        locale = getCurrentAppLocale(),
+                        number = DistanceUnit.M.convert(
+                            weather.current.visibility.toDouble(),
+                            units.distanceUnit
+                        )!!,
+                        decimalPlaces = 1
+                    ),
+                    unit = units.distanceUnit.toName(true, context)
+                )
             } else {
                 NoHourlyDataAvailable()
             }

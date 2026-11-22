@@ -56,7 +56,7 @@ fun AlertsScreen(navController: NavController, locationId: String) {
     }
 
     LargeTopBarScaffold(
-        title = "Alerts",
+        title = stringResource(R.string.weather_alerts),
         navigationIcon = { NavigateUpBtn(navController) },
     ) { paddingValues ->
         Column(

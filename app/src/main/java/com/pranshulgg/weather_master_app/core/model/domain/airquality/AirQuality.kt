@@ -31,6 +31,13 @@ data class AirQuality(
 
         private val aqiThreshold = listOf(0, 20, 50, 100, 150, 250)
 
+        /**
+         * Chinese national scale (HJ 633-2012) used for the level badges.
+         * The source reports its index on this scale, so levels must be judged
+         * against it or a "31 优" reading would be shown as "良".
+         */
+        private val displayAqiThreshold = listOf(0, 50, 100, 150, 200, 300)
+
         private fun getAqi(value: Double, thresholds: List<Int>): Int {
             val index = thresholds.indexOfLast { value >= it }
 
@@ -65,20 +72,25 @@ data class AirQuality(
 
     fun getAqi(): Int {
 
+        // Sources that report a ready-made index (e.g. China / CNEMC) take priority
+        current.reportedAqi?.takeIf { it > 0 }?.let { return it }
+
         // Open-Meteo provides "carbon_monoxide" in MicrogramsPerCubicMeter so we convert to Milligrams
-        val coInMilligramsPerCubicMeter = (current.carbonMonoxide!! / 1000)
-
-
-        return maxOf(
-            getAqi(current.pm25!!, pm25Thresholds),
-            getAqi(current.nitrogenDioxide!!, no2Thresholds),
-            getAqi(current.ozone!!, o3Thresholds),
-            getAqi(current.pm10!!, pm10Thresholds),
-            getAqi(coInMilligramsPerCubicMeter, coThresholds),
-            getAqi(current.sulphurDioxide!!, so2Thresholds)
+        return getAqiFromValues(
+            carbonMonoxideMicrogramsPerCubicMeter = current.carbonMonoxide,
+            pm25 = current.pm25,
+            nitrogenDioxide = current.nitrogenDioxide,
+            ozone = current.ozone,
+            pm10 = current.pm10,
+            sulphurDioxide = current.sulphurDioxide
         )
     }
 
+    /**
+     * Any missing pollutant is simply skipped instead of crashing: not every
+     * source supplies every pollutant (and per-hour series may only carry the
+     * already-computed index).
+     */
     fun getAqiFromValues(
         carbonMonoxideMicrogramsPerCubicMeter: Double?,
         pm25: Double?,
@@ -89,26 +101,42 @@ data class AirQuality(
     ): Int {
 
         // Open-Meteo provides "carbon_monoxide" in MicrogramsPerCubicMeter so we convert to Milligrams
-        val coInMilligramsPerCubicMeter = (carbonMonoxideMicrogramsPerCubicMeter!! / 1000)
-
+        val coInMilligramsPerCubicMeter = carbonMonoxideMicrogramsPerCubicMeter?.div(1000)
 
         return maxOf(
-            getAqi(pm25!!, pm25Thresholds),
-            getAqi(nitrogenDioxide!!, no2Thresholds),
-            getAqi(ozone!!, o3Thresholds),
-            getAqi(pm10!!, pm10Thresholds),
-            getAqi(coInMilligramsPerCubicMeter, coThresholds),
-            getAqi(sulphurDioxide!!, so2Thresholds)
+            aqiOrZero(pm25, pm25Thresholds),
+            aqiOrZero(nitrogenDioxide, no2Thresholds),
+            aqiOrZero(ozone, o3Thresholds),
+            aqiOrZero(pm10, pm10Thresholds),
+            aqiOrZero(coInMilligramsPerCubicMeter, coThresholds),
+            aqiOrZero(sulphurDioxide, so2Thresholds)
         )
     }
 
+    /**
+     * AQI for one hourly entry: use the reported index when the source provides
+     * one, otherwise derive it from whatever pollutant values exist.
+     */
+    fun getAqiForHourly(hourly: AirQualityHourly): Int =
+        hourly.aqi?.takeIf { it > 0 } ?: getAqiFromValues(
+            carbonMonoxideMicrogramsPerCubicMeter = hourly.carbonMonoxide,
+            pm25 = hourly.pm25,
+            nitrogenDioxide = hourly.nitrogenDioxide,
+            ozone = hourly.ozone,
+            pm10 = hourly.pm10,
+            sulphurDioxide = hourly.sulphurDioxide
+        )
+
+    private fun aqiOrZero(value: Double?, thresholds: List<Int>): Int =
+        value?.let { getAqi(it, thresholds) } ?: 0
+
     // For AQI bars
     fun getAqiBarValue(aqi: Int): Float {
-        return (aqi / 250f).coerceIn(0f, 1f)
+        return (aqi / 300f).coerceIn(0f, 1f)
     }
 
     private fun getAqiIndex(value: Int): Int {
-        val index = aqiThreshold.indexOfLast { value >= it }
+        val index = displayAqiThreshold.indexOfLast { value >= it }
         return if (index == -1) 0 else index
     }
 
@@ -149,7 +177,13 @@ data class AirQualityCurrent(
     val ozone: Double?,
 
     /** Milliseconds */
-    val lastUpdatedInMilli: Long
+    val lastUpdatedInMilli: Long,
+
+    /**
+     * Index as published by the source itself (China / CNEMC), used as-is when
+     * present. Null for sources where the app derives the index locally.
+     */
+    val reportedAqi: Int? = null
 )
 
 data class AirQualityHourly(
@@ -173,4 +207,10 @@ data class AirQualityHourly(
 
     /** Seconds */
     val time: Long,
+
+    /**
+     * Index as published by the source for this hour (China / China Weather).
+     * Null when the source only exposes pollutant concentrations.
+     */
+    val aqi: Int? = null,
 )

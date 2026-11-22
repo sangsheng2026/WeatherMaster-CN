@@ -45,6 +45,8 @@ object AppPrefs {
 
     private val _isNewVersionMessageEnabled = mutableStateOf(true)
 
+    private val _isFeelsLikeAsMain = mutableStateOf(false)
+
 
     fun initPrefs(context: Context) {
         PreferencesHelper.init(context)
@@ -97,6 +99,8 @@ object AppPrefs {
 
         _isNewVersionMessageEnabled.value =
             PreferencesHelper.getBool("isNewVersionMessageEnabled") ?: true
+
+        _isFeelsLikeAsMain.value = PreferencesHelper.getBool("isFeelsLikeAsMain") ?: false
 
     }
 
@@ -227,6 +231,12 @@ object AppPrefs {
         setNewVersionMessageEnabled = {
             _isNewVersionMessageEnabled.value = it
             PreferencesHelper.setBool("isNewVersionMessageEnabled", it)
+        },
+
+        isFeelsLikeAsMain = _isFeelsLikeAsMain.value,
+        setFeelsLikeAsMain = {
+            _isFeelsLikeAsMain.value = it
+            PreferencesHelper.setBool("isFeelsLikeAsMain", it)
         }
     )
 }

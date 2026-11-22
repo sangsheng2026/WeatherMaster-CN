@@ -22,6 +22,7 @@ import com.pranshulgg.weather_master_app.core.model.domain.weather.Weather
 import com.pranshulgg.weather_master_app.core.model.weather.TemperatureUnit
 import com.pranshulgg.weather_master_app.core.model.weather.toIcon
 import com.pranshulgg.weather_master_app.core.model.weather.toLabel
+import com.pranshulgg.weather_master_app.core.prefs.LocalAppPrefs
 import com.pranshulgg.weather_master_app.core.ui.components.Gap
 import com.pranshulgg.weather_master_app.core.ui.components.Symbol
 import com.pranshulgg.weather_master_app.core.ui.components.WeatherIconBox
@@ -63,12 +64,17 @@ private fun CardRowContent(weather: Weather, units: WeatherUnits, context: Conte
 
     val colorScheme = MaterialTheme.colorScheme
     val current = weather.current
+    val prefs = LocalAppPrefs.current
 
     val currentTemp = TemperatureUnit.CELSIUS.convert(current.temperature, units.tempUnit)
 
     val feelsLike = TemperatureUnit.CELSIUS.convert(current.feelsLike, units.tempUnit)
 
-
+    // "Felt temperature as the main reading" is a user preference; the other
+    // value stays visible underneath.
+    val isFeelsLikeMain = prefs.isFeelsLikeAsMain && feelsLike != null
+    val mainTemp = if (isFeelsLikeMain) feelsLike else currentTemp
+    val secondaryTemp = if (isFeelsLikeMain) currentTemp else feelsLike
 
     Column {
         Text(
@@ -78,7 +84,7 @@ private fun CardRowContent(weather: Weather, units: WeatherUnits, context: Conte
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "${currentTemp?.roundToInt() ?: "-"}°",
+                "${mainTemp?.roundToInt() ?: "-"}°",
                 color = colorScheme.primary,
                 fontSize = 62.sp,
                 fontWeight = FontWeight.Medium
@@ -99,7 +105,10 @@ private fun CardRowContent(weather: Weather, units: WeatherUnits, context: Conte
             style = MaterialTheme.typography.titleMedium
         )
         Text(
-            stringResource(R.string.temp_feels_like, "${feelsLike?.roundToInt() ?: "-"}°"),
+            stringResource(
+                if (isFeelsLikeMain) R.string.temp_actual else R.string.temp_feels_like,
+                "${secondaryTemp?.roundToInt() ?: "-"}°"
+            ),
             color = colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyMedium
         )
@@ -173,10 +182,15 @@ private fun LastUpdatedTextRow(timeMilli: Long, context: Context) {
 @Composable
 fun PixelStyleCurrentWeatherCard(weather: Weather, units: WeatherUnits, context: Context) {
     val current = weather.current
+    val prefs = LocalAppPrefs.current
 
     val currentTemp = TemperatureUnit.CELSIUS.convert(current.temperature, units.tempUnit)
 
     val feelsLike = TemperatureUnit.CELSIUS.convert(current.feelsLike, units.tempUnit)
+
+    val isFeelsLikeMain = prefs.isFeelsLikeAsMain && feelsLike != null
+    val mainTemp = if (isFeelsLikeMain) feelsLike else currentTemp
+    val secondaryTemp = if (isFeelsLikeMain) currentTemp else feelsLike
 
     Column(
         modifier = Modifier
@@ -203,13 +217,16 @@ fun PixelStyleCurrentWeatherCard(weather: Weather, units: WeatherUnits, context:
             )
         }
         Text(
-            "${currentTemp?.roundToInt() ?: "-"}°",
+            "${mainTemp?.roundToInt() ?: "-"}°",
             color = MaterialTheme.colorScheme.primary,
             fontSize = 136.sp,
             fontWeight = FontWeight.Bold,
         )
         Text(
-            stringResource(R.string.temp_feels_like, "${feelsLike?.roundToInt() ?: "-"}°"),
+            stringResource(
+                if (isFeelsLikeMain) R.string.temp_actual else R.string.temp_feels_like,
+                "${secondaryTemp?.roundToInt() ?: "-"}°"
+            ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Medium

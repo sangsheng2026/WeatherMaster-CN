@@ -20,16 +20,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pranshulgg.weather_master_app.R
+import com.pranshulgg.weather_master_app.core.model.weather.PressureUnit
+import com.pranshulgg.weather_master_app.core.model.weather.toName
 import com.pranshulgg.weather_master_app.core.prefs.LocalAppPrefs
 import com.pranshulgg.weather_master_app.core.ui.components.Gap
 import com.pranshulgg.weather_master_app.core.ui.components.LargeTopBarScaffold
 import com.pranshulgg.weather_master_app.core.ui.components.NavigateUpBtn
+import com.pranshulgg.weather_master_app.core.utils.formatters.formatLocalizedNumber
 import com.pranshulgg.weather_master_app.core.utils.formatters.getCurrentTimeFor
 import com.pranshulgg.weather_master_app.core.utils.formatters.toDateString
+import com.pranshulgg.weather_master_app.core.utils.locale.getCurrentAppLocale
 import com.pranshulgg.weather_master_app.core.utils.weather.forecast.findMatchingHourly
 import com.pranshulgg.weather_master_app.feature.blocks.BlocksScreenViewModel
 import com.pranshulgg.weather_master_app.feature.blocks.components.AboutCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.AboutCardText
+import com.pranshulgg.weather_master_app.feature.blocks.components.CurrentValueCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.NoHourlyDataAvailable
 import com.pranshulgg.weather_master_app.feature.blocks.screens.pressure.components.PressureHourlyCard
 
@@ -86,6 +91,20 @@ fun PressureScreen(navController: NavController, index: Int = 0, locationId: Str
 
             if (pressureData.isNotEmpty() && !pressureData.contains(null)) {
                 PressureHourlyCard(data, zoneId, units.pressureUnit, context)
+            } else if (weather.current.pressureMsl != null) {
+                CurrentValueCard(
+                    iconRes = R.drawable.compress_24px,
+                    title = stringResource(R.string.weather_pressure),
+                    value = formatLocalizedNumber(
+                        locale = getCurrentAppLocale(),
+                        number = PressureUnit.HPA.convert(
+                            weather.current.pressureMsl,
+                            units.pressureUnit
+                        )!!,
+                        decimalPlaces = 1
+                    ),
+                    unit = units.pressureUnit.toName(true, context)
+                )
             } else {
                 NoHourlyDataAvailable()
             }

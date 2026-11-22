@@ -173,3 +173,67 @@ WeatherManager.invoke()
 | `app/build.gradle.kts` | `versionName = 3.11.0-cn5`、`versionCode = 72` |
 
 `NavTransitions.kt` 的转场调整（短距离 slide + fade）保留，它与预测性返回无关，是独立的观感改进。
+
+## 十二、3.11.0-cn6 增量修改（2026-11-22）
+
+### 1. 详情页「暂无天气数据」修复
+
+**根因**：China（小米天气）接口只提供当前的湿度/气压/露点等，**没有逐时序列**；而所有详情页的判断是「整列只要有一个 `null` 就当无数据」，于是湿度、气压、露点、紫外线、能见度详情页全部空白。首页读 `current`，所以首页正常——这才是「首页有数、点进去没数」的真正原因，与网络无关。
+
+| 文件 | 改动 |
+|---|---|
+| `core/network/sources/weather/china/ChinaHourlySupplement.kt` | **新增**：轻量 Open-Meteo 请求（只取缺的 5 个逐时字段，8 秒超时，失败静默） |
+| `core/network/sources/weather/china/ChinaRepository.kt` | 补充请求与小米请求**并行**发出；按整点对齐合并，**只填空值、不覆盖小米已有数据** |
+| `core/di/network/ApiModule.kt` | 注册 `ChinaHourlySupplementApi` |
+| `feature/blocks/components/CurrentValueCard.kt` | **新增**：补数失败时显示「当前值」卡片，说明该数据源无逐时变化 |
+| `PressureScreen` / `HumidityScreen` / `UvIndexScreen` / `VisibilityScreen` / `AirQualityScreen` | 无逐时序列时显示当前值，不再显示「暂无天气数据」 |
+
+实测：手机直连 Open-Meteo 全字段请求 3/3 成功、约 1 秒（**此前认为的「被墙导致超时」并不成立**）。
+
+### 2. 空气质量改接中国官方数据源
+
+`weather/all` 同一份响应里就带着官方 AQI（中国环境监测总站 CNEMC）与逐时 AQI，无需第三方 API、无需 key。
+
+| 文件 | 改动 |
+|---|---|
+| `core/model/sources/Source.kt` | `CHINA` 能力加 `AIR_QUALITY`、`ALERTS` |
+| `core/model/domain/airquality/AirQuality.kt` | 新增 `reportedAqi` / `AirQualityHourly.aqi`；`getAqi()` 优先用源给的官方值；污染物缺失不再 `!!` 崩溃；等级判定改用国标分段 `0/50/100/150/200/300` |
+| `core/network/sources/weather/china/json/ChinaForecastJson.kt` | 解析 `aqi`、`alerts`、逐时 `aqi` |
+| `data/local/mapper/airquality/sources/china/ChinaAqiMapper.kt` | **新增**：CNEMC → 领域模型（CO 由 mg/m³ 换算为 µg/m³） |
+| `ChinaRepository` | 实现 `airQualityCapability()`、`providesAirQuality = true` |
+| `CurrentAirQualityEntity` / `HourlyAirQualityEntity` | 各加一列，**DB 60 → 61** + `AutoMigration` |
+| `WeatherMasterDatabase.kt` | 新增 `ChinaSourceDefaultsSpec`：升级时把「天气源为 China」的位置的空气质量/预警源一并切到 China |
+| `AirQualityHourlyCard` / `PollutantsHourlyCard` | 逐时污染物缺失时不再画该污染物卡片（原先 `value!!` 会崩） |
+
+### 3. 天气预警接入官方源
+
+| 文件 | 改动 |
+|---|---|
+| `data/local/mapper/alerts/sources/china/ChinaAlertsMapper.kt` | **新增**：气象台预警 → `Alert`（颜色等级映射到严重度） |
+| `ChinaRepository` | 实现 `alertCapability()`、`providesAlerts = true` |
+
+**去重**：小米会把同一条预警的多次发布（「继续发布」）都返回，`alertId` 不同但内容相同。按「类型+等级+标题」归并，只保留发布时间最新的一条。
+
+### 4. 新增「首页显示体感温度」开关
+
+| 文件 | 改动 |
+|---|---|
+| `core/prefs/AppPrefs.kt`、`AppPrefsState.kt` | 新增 `isFeelsLikeAsMain` 偏好 |
+| `feature/main/ui/CurrentWeatherCard.kt` | 大号温度在「气温/体感」间切换，另一项显示在下方（两种布局都改） |
+| `feature/settings/appearance/AppearanceScreen.kt` | 外观 → 天气 分组新增开关 |
+
+### 5. 汉化补全
+
+之前遗留的硬编码英文全部改为字符串资源：
+
+- **首次启动引导页**（`IntroScreen.kt`）：标题、「启用定位」「搜索城市」「导入备份」及其加载态
+- **许可页**（`LicenseScreen.kt`）：整页正文
+- **日期格式选项**：`System default` → 「跟随系统」等 5 条
+- **通知设置**：「预报通知」「预警通知」及说明 3 条
+- **空气质量详情**：6 条污染物说明
+- **露点等级**：Dry and comfortable / Comfortable / Sticky / Muggy / Uncomfortable
+- **杂项**：预警页标题、`Unknown`、`Name` 占位符、`Requires API key`、「生效中的预警」、`API key` 占位符
+
+### 6. 版本
+
+`app/build.gradle.kts`：`versionName = 3.11.0-cn6`、`versionCode = 73`。

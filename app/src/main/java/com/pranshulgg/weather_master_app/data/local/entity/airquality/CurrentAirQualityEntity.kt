@@ -29,6 +29,9 @@ data class CurrentAirQualityEntity(
     val nitrogenDioxide: Double?,
     val sulphurDioxide: Double?,
     val ozone: Double?,
-    val lastUpdatedInMilli: Long
+    val lastUpdatedInMilli: Long,
+
+    /** Index published by the source itself (China / CNEMC), when available. */
+    val reportedAqi: Int? = null
 )
 

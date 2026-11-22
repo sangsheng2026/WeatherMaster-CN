@@ -55,10 +55,10 @@ fun LicenseScreen(navController: NavController) {
 
             Text(
                 text =
-                    "This application is licensed under the GNU General Public License Version 3 (GPLv3).\n\n" +
-                            "You are free to use, study, modify, and distribute this software under the terms of the GPLv3 license.\n\n" +
-                            "Any modified versions or redistributed copies must also remain open-source and include the same license.\n\n" +
-                            "This software is provided \"as is\", without warranty of any kind, including merchantability or fitness for a particular purpose.",
+                    "本应用基于 GNU 通用公共许可证第 3 版（GPLv3）授权。\n\n" +
+                            "你可以在 GPLv3 条款下自由使用、研究、修改和分发本软件。\n\n" +
+                            "任何修改版本或再分发的副本也必须保持开源，并附带同一许可证。\n\n" +
+                            "本软件按「现状」提供，不附带任何明示或暗示的担保，包括对适销性或特定用途适用性的担保。",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -68,7 +68,7 @@ fun LicenseScreen(navController: NavController) {
             )
 
             Text(
-                text = "Your Rights",
+                text = "你的权利",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -77,10 +77,10 @@ fun LicenseScreen(navController: NavController) {
 
             Text(
                 text =
-                    "• Use the software for any purpose\n" +
-                            "• Access and modify the source code\n" +
-                            "• Share copies of the software\n" +
-                            "• Distribute modified versions under GPLv3",
+                    "• 出于任何目的使用本软件\n" +
+                            "• 获取并修改源代码\n" +
+                            "• 分享本软件的副本\n" +
+                            "• 以 GPLv3 分发修改后的版本",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -90,7 +90,7 @@ fun LicenseScreen(navController: NavController) {
             )
 
             Text(
-                text = "Conditions",
+                text = "条件",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -99,10 +99,10 @@ fun LicenseScreen(navController: NavController) {
 
             Text(
                 text =
-                    "• You must include the GPLv3 license when redistributing\n" +
-                            "• Modified versions must clearly state changes made\n" +
-                            "• Derivative works must also be licensed under GPLv3\n" +
-                            "• Source code must remain available",
+                    "• 再分发时必须附带 GPLv3 许可证\n" +
+                            "• 修改版本必须清楚说明所做的更改\n" +
+                            "• 衍生作品也必须以 GPLv3 授权\n" +
+                            "• 源代码必须保持可获取",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -112,7 +112,7 @@ fun LicenseScreen(navController: NavController) {
             )
 
             Text(
-                text = "Full License",
+                text = "完整许可证",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -121,7 +121,7 @@ fun LicenseScreen(navController: NavController) {
 
             Text(
                 text = buildAnnotatedString {
-                    append("You can read the full GNU GPLv3 license at: ")
+                    append("你可以在以下地址阅读完整的 GNU GPLv3 许可证：")
                     withLink(
                         LinkAnnotation.Url("https://www.gnu.org/licenses/gpl-3.0.en.html")
                     ) {

@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.pranshulgg.weather_master_app.core.model.domain.AppException
 import com.pranshulgg.weather_master_app.core.model.domain.toAppException
 import com.pranshulgg.weather_master_app.core.model.domain.toMessageRes
+import com.pranshulgg.weather_master_app.core.model.sources.Capability
 import com.pranshulgg.weather_master_app.core.model.sources.Source
 import com.pranshulgg.weather_master_app.core.network.sources.address.nominatim.json.NominatimRepository
 import com.pranshulgg.weather_master_app.core.prefs.AppPrefs
@@ -60,13 +61,23 @@ class IntroScreenViewModel @Inject constructor(
                     chinaOfflineGeocoder.checkIsChina(location.latitude, location.longitude)
             val defaultSource = if (isInChina) Source.CHINA else Source.OPEN_METEO
 
+            // Keep the other capabilities on the same source when it supports
+            // them (China now serves official air quality and alerts).
+            val defaultAlertSource =
+                if (Capability.ALERTS in defaultSource.capabilities) defaultSource else Source.NONE
+            val defaultAirQualitySource =
+                if (Capability.AIR_QUALITY in defaultSource.capabilities) defaultSource
+                else Source.OPEN_METEO
+
             if (address != null && address.city != null) {
                 locationsRepo.saveLocation(
                     location.toDomain(context).copy(
                         name = address.city,
                         country = address.country,
                         countryCode = address.countryCode,
-                        source = defaultSource
+                        source = defaultSource,
+                        alertSource = defaultAlertSource,
+                        airQualitySource = defaultAirQualitySource
                     )
                 )
             } else {
@@ -89,10 +100,16 @@ class IntroScreenViewModel @Inject constructor(
                         domain.copy(
                             name = offlineName,
                             countryCode = "CN",
-                            source = defaultSource
+                            source = defaultSource,
+                            alertSource = defaultAlertSource,
+                            airQualitySource = defaultAirQualitySource
                         )
                     } else {
-                        domain.copy(source = defaultSource)
+                        domain.copy(
+                            source = defaultSource,
+                            alertSource = defaultAlertSource,
+                            airQualitySource = defaultAirQualitySource
+                        )
                     }
                 )
             }

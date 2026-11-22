@@ -43,10 +43,12 @@ import com.pranshulgg.weather_master_app.core.utils.weather.forecast.findMatchin
 import com.pranshulgg.weather_master_app.feature.blocks.BlocksScreenViewModel
 import com.pranshulgg.weather_master_app.feature.blocks.components.AboutCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.AboutCardText
+import com.pranshulgg.weather_master_app.feature.blocks.components.CurrentValueCard
 import com.pranshulgg.weather_master_app.feature.blocks.components.NoHourlyDataAvailable
 import com.pranshulgg.weather_master_app.feature.blocks.components.ScaleCard
 import com.pranshulgg.weather_master_app.feature.blocks.screens.humidity.components.DewPointHourlyCard
 import com.pranshulgg.weather_master_app.feature.blocks.screens.humidity.components.HumidityHourlyCard
+import kotlin.math.roundToInt
 
 @Composable
 fun HumidityScreen(navController: NavController, index: Int = 0, locationId: String) {
@@ -73,7 +75,11 @@ fun HumidityScreen(navController: NavController, index: Int = 0, locationId: Str
     val prefs = LocalAppPrefs.current
 
     val dewPointScaleText = listOf(
-        "Dry and comfortable", "Comfortable", "Sticky", "Muggy", "Uncomfortable"
+        stringResource(R.string.dew_point_scale_dry),
+        stringResource(R.string.dew_point_scale_comfortable),
+        stringResource(R.string.dew_point_scale_sticky),
+        stringResource(R.string.dew_point_scale_muggy),
+        stringResource(R.string.dew_point_scale_uncomfortable)
     )
 
 
@@ -121,6 +127,13 @@ fun HumidityScreen(navController: NavController, index: Int = 0, locationId: Str
         ) {
             if (humidityData.isNotEmpty() && !humidityData.contains(null)) {
                 HumidityHourlyCard(data, zoneId)
+            } else if (weather.current.humidity != null) {
+                CurrentValueCard(
+                    iconRes = R.drawable.humidity_percentage_24px,
+                    title = stringResource(R.string.weather_humidity),
+                    value = "${weather.current.humidity.roundToInt()}",
+                    unit = "%"
+                )
             } else {
                 NoHourlyDataAvailable()
             }
@@ -132,6 +145,15 @@ fun HumidityScreen(navController: NavController, index: Int = 0, locationId: Str
             DewPointHeader()
             if (dewPointData.isNotEmpty() && !dewPointData.contains(null)) {
                 DewPointHourlyCard(data, zoneId, units.tempUnit, context)
+            } else if (weather.current.dewPoint != null) {
+                CurrentValueCard(
+                    iconRes = R.drawable.dew_point_24px,
+                    title = stringResource(R.string.weather_dew_point),
+                    value = "${
+                        TemperatureUnit.CELSIUS.convert(weather.current.dewPoint, units.tempUnit)
+                            ?.roundToInt() ?: "-"
+                    }°"
+                )
             } else {
                 NoHourlyDataAvailable()
             }

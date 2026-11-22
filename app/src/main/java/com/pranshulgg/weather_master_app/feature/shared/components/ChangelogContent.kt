@@ -41,7 +41,15 @@ fun ChangelogContent(hideSheet: () -> Unit) {
         ) {
             Gap(5.dp)
             ChangelogBox {
-                ChangelogHeader("本版（3.11.0-cn5）")
+                ChangelogHeader("本版（3.11.0-cn6）")
+                ChangelogText("修复：湿度、气压、露点、紫外线、能见度详情页一直显示「暂无天气数据」。原因是数据源没提供逐时序列，现在会自动补齐；补不到时显示当前值而不是空白")
+                ChangelogText("空气质量改用中国环境监测总站（CNEMC）的官方数据，不再依赖境外接口；等级按国标分段，和手机自带天气对得上")
+                ChangelogText("新增天气预警：直接显示中央/地方气象台的官方预警（含防御指南）。同一条预警被反复发布时只显示最新一条")
+                ChangelogText("新增「首页显示体感温度」开关：设置 → 外观 → 首页显示体感温度")
+                ChangelogText("补齐汉化：首次启动的定位引导页、许可页、日期格式选项、通知开关、污染物说明、露点等级等之前还是英文")
+            }
+            ChangelogBox {
+                ChangelogHeader("3.11.0-cn5")
                 ChangelogText("预测性返回：试过在运行时关掉，但系统的返回预览不受 App 控制，那个开关是无效的，已删除")
                 ChangelogText("改为在 manifest 里直接关闭预测性返回，回到传统返回。侧滑不再是「页面缩成卡片预览」的效果")
                 ChangelogText("页面的进入/返回转场保留上一版的短距离滑动 + 淡入淡出")

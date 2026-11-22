@@ -16,7 +16,8 @@ fun AirQualityCurrent.toEntity(locationId: String): CurrentAirQualityEntity =
         nitrogenDioxide = nitrogenDioxide,
         sulphurDioxide = sulphurDioxide,
         ozone = ozone,
-        lastUpdatedInMilli = lastUpdatedInMilli
+        lastUpdatedInMilli = lastUpdatedInMilli,
+        reportedAqi = reportedAqi
     )
 
 fun AirQualityHourly.toEntity(locationId: String): HourlyAirQualityEntity =
@@ -28,5 +29,6 @@ fun AirQualityHourly.toEntity(locationId: String): HourlyAirQualityEntity =
         nitrogenDioxide = nitrogenDioxide,
         sulphurDioxide = sulphurDioxide,
         ozone = ozone,
-        time = time
+        time = time,
+        aqi = aqi
     )

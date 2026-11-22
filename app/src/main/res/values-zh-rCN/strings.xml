@@ -38,6 +38,7 @@
     <string name="time_just_now">刚刚</string>
     <string name="time_last_updated">上次更新于 %1$s</string>
     <string name="weather_no_data">暂无天气数据</string>
+    <string name="current_value_no_hourly">当前值 · 该数据源暂不提供逐时变化</string>
     <string name="weather_clear_sky">晴</string>
     <string name="weather_overcast">阴天</string>
     <string name="weather_partly_cloudy">局部多云</string>
@@ -93,6 +94,9 @@
     <string name="error_delete_default_location">无法删除默认位置</string>
     <string name="setting_app_looks">应用外观</string>
     <string name="temp_feels_like">体感温度：%1$s</string>
+    <string name="temp_actual">气温：%1$s</string>
+    <string name="setting_feels_like_as_main">首页显示体感温度</string>
+    <string name="setting_feels_like_as_main_secondary">大号温度改用体感温度，气温显示在旁边</string>
     <string name="temp_max">最高：%1$s</string>
     <string name="temp_min">最低：%1$s</string>
     <string name="search_results_provided">搜索结果由 %1$s 提供</string>
@@ -338,7 +342,7 @@
     <string name="confirm_delete_location">删除位置</string>
     <string name="alert_delete_location_secondary">确定要删除此位置吗？</string>
     <string name="weather_alerts">天气预警</string>
-    <string name="forecast_notifications">Forecast notifications</string>
+    <string name="forecast_notifications">预报通知</string>
     <string name="dew_point_scale_dry_comfortable">干爽且舒适</string>
     <string name="dew_point_scale_comfortable">舒适</string>
     <string name="dew_point_scale_sticky">闷热</string>
@@ -441,7 +445,38 @@
     <string name="weather_refresh_delay_fixed">请在 15 分钟后再刷新</string>
     <string name="country_turkey">土耳其</string>
     <string name="country_belgium">比利时</string>
-    <string name="notifications_setting_alert_notifications">Alert notifications</string>
-    <string name="notifications_setting_alert_notifications_secondary">Show notifications for weather warnings when available</string>
+    <string name="notifications_setting_alert_notifications">预警通知</string>
+    <string name="notifications_setting_alert_notifications_secondary">有天气预警时发送通知</string>
+
+    <!-- cn6 本地化补全 -->
+    <string name="intro_title">获取你的天气</string>
+    <string name="intro_location_permission">允许定位权限，才能显示你所在位置的天气</string>
+    <string name="action_enable_location">启用定位</string>
+    <string name="action_loading">加载中…</string>
+    <string name="action_search_city">搜索城市</string>
+    <string name="action_import_backup">导入备份</string>
+    <string name="action_importing">正在导入…</string>
+    <string name="pollutant_pm25_desc">直径小于 2.5 微米的细颗粒物</string>
+    <string name="pollutant_pm10_desc">直径小于 10 微米的颗粒物</string>
+    <string name="pollutant_co_desc">一氧化碳</string>
+    <string name="pollutant_no2_desc">二氧化氮</string>
+    <string name="pollutant_so2_desc">二氧化硫</string>
+    <string name="pollutant_o3_desc">近地面臭氧</string>
+    <string name="dew_point_scale_dry">干燥舒适</string>
+    <string name="alert_unknown">未知</string>
+    <string name="hint_name">名称</string>
+    <string name="requires_api_key">需要 API 密钥</string>
+    <string name="license_your_rights">你的权利</string>
+    <string name="license_conditions">条件</string>
+    <string name="license_full_license">完整许可证</string>
+    <string name="license_full_license_link">你可以在以下地址阅读完整的 GNU GPLv3 许可证：</string>
+    <string name="theme_light">浅色</string>
+    <string name="active_alerts">生效中的预警</string>
+    <string name="hint_api_key">API 密钥</string>
+    <string name="date_format_system">跟随系统</string>
+    <string name="date_format_mm_dd">月/日 (09/10)</string>
+    <string name="date_format_dd_mm">日.月 (10.09)</string>
+    <string name="date_format_month_day">月 日 (9月10日)</string>
+    <string name="date_format_day_month">日 月 (10日 9月)</string>
 </resources>
 <!--<string name=""></string>-->
